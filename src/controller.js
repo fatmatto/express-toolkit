@@ -20,7 +20,7 @@ class Controller {
     this.defaultSkipValue = config.defaultSkipValue || DEFAULT_SKIP_VALUE
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
   }
-  list (query) {
+  find (query) {
     let skip = this.defaultSkipValue
     let limit = this.defaultLimitValue
     if (query.hasOwnProperty('limit')) {
@@ -53,7 +53,7 @@ class Controller {
       return instance
     }
   }
-  async getById (id) {
+  async findById (id) {
     const instance = await this.Model.findOne({
       _id: id
     })
@@ -80,7 +80,7 @@ class Controller {
     return savedInstance.toJSON()
   }
 
-  async updateOne (query, update) {
+  async updateByQuery (query, update) {
     let instance = await this.Model.findOne(query)
 
     if (instance === null) {
@@ -124,7 +124,7 @@ class Controller {
  * Removes resources by query
  * @param {Object} query Match resources to remove.
  */
-  delete (query) {
+  deleteByQuery (query) {
     return this.Model.remove(query)
   }
 

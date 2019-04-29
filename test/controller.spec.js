@@ -35,13 +35,13 @@ test('Reject updateById on non existing resource', async t => {
 })
 test('Reject updateOne on non existing resource', async t => {
   const err = await t.throwsAsync(async () => {
-    await ctrl.updateOne({ name: 'nothingtosee' })
+    await ctrl.updateByQuery({ name: 'nothingtosee' })
   })
   t.is(err.name, 'NotFound')
 })
 test('Reject updateOne on invalid data', async t => {
   const err = await t.throwsAsync(async () => {
-    await ctrl.updateOne({ name: 'Snowball I' }, { age: ['a', 'b', null] })
+    await ctrl.updateByQuery({ name: 'Snowball I' }, { age: ['a', 'b', null] })
   })
   t.is(err.name, 'BadRequest')
 })
@@ -60,18 +60,18 @@ test('Reject findOne non existing resource', async t => {
 })
 test('Reject getById non existing resource', async t => {
   const err = await t.throwsAsync(async () => {
-    await ctrl.getById('non-existing')
+    await ctrl.findById('non-existing')
   })
   t.is(err.name, 'NotFound')
 })
 
 test('list resources', async t => {
-  let cats = await ctrl.list({})
+  let cats = await ctrl.find({})
   t.is(cats.length, cats.length)
 })
 
 test('list resources with limit', async t => {
-  let cats = await ctrl.list({ limit: 1 })
+  let cats = await ctrl.find({ limit: 1 })
   t.is(cats.length, 1)
 })
 
@@ -86,7 +86,7 @@ test('Find one resource', async t => {
 })
 
 test('Update one resource', async t => {
-  let cat = await ctrl.updateOne({ name: 'Snowball III' }, { name: 'Snowball III+' })
+  let cat = await ctrl.updateByQuery({ name: 'Snowball III' }, { name: 'Snowball III+' })
   t.is(cat.name, 'Snowball III+')
 })
 
@@ -97,7 +97,7 @@ test('Update by id', async t => {
 })
 
 test('Delete a resource', async t => {
-  await ctrl.delete({ name: 'Snowball II' })
+  await ctrl.deleteByQuery({ name: 'Snowball II' })
   const err = await t.throwsAsync(async () => {
     await ctrl.findOne({ name: 'Snowball II' })
   })
