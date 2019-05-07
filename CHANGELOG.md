@@ -1,5 +1,12 @@
+## 0.1.0 (2019-05-07)
+
+* Added endpoint hooks ([b84ae63](https://github.com/fatmatto/express-toolkit/commit/b84ae63))
+
+
+
 ## <small>0.0.3 (2019-04-29)</small>
 
+* 📦 Release 0.0.3 ([99cadff](https://github.com/fatmatto/express-toolkit/commit/99cadff))
 * Add unit tests for isJSON function ([10b1015](https://github.com/fatmatto/express-toolkit/commit/10b1015))
 * refactored default endpoints ([4bab732](https://github.com/fatmatto/express-toolkit/commit/4bab732))
 
