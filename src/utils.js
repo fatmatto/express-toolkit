@@ -27,6 +27,7 @@ let isJSON = (str) => {
 /**
  * Returns the sort object to pass to MongoDB
  * @param {Object} query The parsed query string object
+ * @return {Object} The sorting config
  */
 function getSorting (query) {
   let sortBy = query.sortby || '_id'
