@@ -1,5 +1,12 @@
+## 0.2.0 (2019-05-08)
+
+* 📖 added README ([1507f65](https://github.com/fatmatto/express-toolkit/commit/1507f65))
+
+
+
 ## 0.1.0 (2019-05-07)
 
+* 📦 Release 0.1.0 ([8aed9e2](https://github.com/fatmatto/express-toolkit/commit/8aed9e2))
 * Added endpoint hooks ([b84ae63](https://github.com/fatmatto/express-toolkit/commit/b84ae63))
 
 
