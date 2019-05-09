@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "npx eslint index.js test/* --fix",
     "test": "nyc --reporter=text ava test/*.spec.js --verbose",
-    "test-ci": "npx nyc --reporter=text ava test/*.spec.js --verbose",
+    "test-ci": "npx nyc --reporter=lcov ava test/*.spec.js --verbose",
     "commit": "npx git-cz",
     "changelog": "rm CHANGELOG.md; npx conventional-changelog -t -i CHANGELOG.md --same-file",
     "release": "sh scripts/release.sh"
