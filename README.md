@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/fatmatto/express-toolkit.svg?branch=master)](https://travis-ci.org/fatmatto/express-toolkit)
+[![Maintainability](https://api.codeclimate.com/v1/badges/40cff05fa81b87114ae2/maintainability)](https://codeclimate.com/github/fatmatto/express-toolkit/maintainability)
+
 <div align="center">
 
 # Express Toolkit
@@ -5,6 +8,7 @@
 Tiny little utilities for reducing expressjs boilerplate code when building simple, mongodb backed, http apis
 
 </div>
+
 
 
 ## Getting started
