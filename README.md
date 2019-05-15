@@ -25,6 +25,10 @@ const DinosaurSchema = new Schema({
   name: {
     type: String,
     required:true
+  },
+  type: {
+    type: String,
+    required: true
   }
 })
 
@@ -67,3 +71,55 @@ const dinosaursResource = require('./path/to/dinosaur.router.js')
 app.use('/dinosaurs',dinosaursResource)
 // ...
 app.listen(1337)
+```
+
+## Hooks
+
+Every resource endpoint can have multiple *pre* and *post* hooks.
+
+#### List of hooks
+- pre:find
+- post:find
+- pre:findById
+- post:findById
+- pre:create
+- post:create
+- pre:updateById
+- post:updateById
+- pre:update
+- post:update
+- pre:delete
+- post:delete
+- pre:deleteById
+- post:delete
+- pre:count
+- post:count
+
+#### Examples
+```javascript
+const { Controller } = require('express-toolkit')
+const { DinosaurModel } = require('./path/to/dinosaur.model.js')
+
+const myController = new Controller({
+  model: DinosaurModel,
+  name: 'dinosaurs'
+})
+
+// Force all find queries to look for velociraptor type
+myController.registerHook('pre:find', (req,res,next) => {
+  req.query.type = 'velociraptor'
+  next()
+})
+
+// Before returning dinosaurs to the client we convert timestamps to date strings
+myController.registerHook('post:find', (req,res,next) => {
+  req.toSend = req.toSend.map(dinosaur => {
+    let dino = Object.assign({},dinosaur)
+    dino.createdAt = String(new Date(dino.createdAt))
+    return dino
+  })
+  next()
+})
+
+module.exports = myController
+```
