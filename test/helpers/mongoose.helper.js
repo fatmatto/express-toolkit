@@ -14,7 +14,8 @@ function setupMongoose () {
         // options for mongoose 4.11.3 and above
         autoReconnect: true,
         reconnectTries: Number.MAX_VALUE,
-        reconnectInterval: 1000
+        reconnectInterval: 1000,
+        useNewUrlParser: true
       }
 
       return new Promise((resolve, reject) => {
@@ -30,7 +31,7 @@ function setupMongoose () {
         })
 
         mongoose.connection.once('open', () => {
-          console.log(`MongoDB successfully connected to ${mongoUri}`)
+          // Successfully connected to MongoDB
           return resolve(mongoose.connection)
         })
       })
