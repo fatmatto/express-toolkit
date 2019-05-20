@@ -161,7 +161,7 @@ class Controller {
  * @param {Object} query Match resources to remove.
  */
   deleteByQuery (query) {
-    return this.Model.remove(query)
+    return this.Model.deleteMany(query)
   }
 
   /**
@@ -169,7 +169,7 @@ class Controller {
  * @param {String} id The resource's id.
  */
   deleteById (id) {
-    return this.Model.remove({ _id: id })
+    return this.Model.deleteOne({ _id: id })
   }
 
   /**
