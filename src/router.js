@@ -86,7 +86,6 @@ function buildRouter (config) {
   })
 
   const findMiddleware = asyncMiddleware(async (req, res, next) => {
-    console.log('findMiddleware')
     let query = req.query
     let resources = await config.controller.find(query)
     req.toSend = resources
