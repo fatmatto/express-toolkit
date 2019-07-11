@@ -7,7 +7,7 @@ const Controller = require('./controller')
  * @param {Controller} resource
  * @param {String} eventName
  */
-function runHooks (resource, eventName) {
+function runHooks(resource, eventName) {
   let hooks = resource.getHooks(eventName)
   if (!hooks) {
     return (req, res, next) => {
@@ -24,7 +24,7 @@ function runHooks (resource, eventName) {
  * @param {*} res
  * @param {function} next
  */
-function finalize (req, res, next) {
+function finalize(req, res, next) {
   return res.send({ status: true, data: req.toSend })
 }
 
@@ -33,7 +33,7 @@ function finalize (req, res, next) {
  * @param {Object} config
  * @param {Object} config.controller
  */
-function buildRouter (config) {
+function buildRouter(config) {
   const router = express.Router()
   if (!(config.controller instanceof Controller)) {
     throw new Error('config.controller must be an instance of Controller')
@@ -50,6 +50,12 @@ function buildRouter (config) {
 
   const createMiddleware = asyncMiddleware(async (req, res, next) => {
     let resource = await config.controller.create(req.body)
+    req.toSend = resource
+    return next()
+  })
+
+  const createViaUpsertMiddleware = asyncMiddleware(async (req, res, next) => {
+    const resource = await config.controller.createViaUpsert(req.body.search, req.body.data)
     req.toSend = resource
     return next()
   })
@@ -86,6 +92,7 @@ function buildRouter (config) {
   })
 
   const findMiddleware = asyncMiddleware(async (req, res, next) => {
+    console.log('findMiddleware')
     let query = req.query
     let resources = await config.controller.find(query)
     req.toSend = resources
@@ -106,6 +113,13 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:create'),
     createMiddleware,
     runHooks(config.controller, 'post:create'),
+    finalize
+  )
+
+  router.post('/upsert',
+    runHooks(config.controller, 'pre:upsert'),
+    createViaUpsertMiddleware,
+    runHooks(config.controller, 'post:upsert'),
     finalize
   )
 
