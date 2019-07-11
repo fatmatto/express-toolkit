@@ -165,7 +165,7 @@ class Controller {
  * @param {Object} query Match resources to remove.
  */
   deleteByQuery (query) {
-    return this.Model.deleteOne(query)
+    return this.Model.deleteMany(query)
   }
 
   /**
