@@ -105,6 +105,10 @@ class Controller {
     return savedInstance.toJSON()
   }
 
+  createViaUpsert (search, data) {
+    return this.Model.findOneAndUpdate(search, data, { useFindAndModify: false, new: true, upsert: true, setDefaultsOnInsert: true })
+  }
+
   /**
   * Update records by query
   * @param {Object} query The query to match records to update
@@ -161,7 +165,7 @@ class Controller {
  * @param {Object} query Match resources to remove.
  */
   deleteByQuery (query) {
-    return this.Model.deleteMany(query)
+    return this.Model.remove(query)
   }
 
   /**
@@ -169,7 +173,7 @@ class Controller {
  * @param {String} id The resource's id.
  */
   deleteById (id) {
-    return this.Model.deleteOne({ _id: id })
+    return this.Model.remove({ _id: id })
   }
 
   /**
