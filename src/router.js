@@ -7,7 +7,7 @@ const Controller = require('./controller')
  * @param {Controller} resource
  * @param {String} eventName
  */
-function runHooks(resource, eventName) {
+function runHooks (resource, eventName) {
   let hooks = resource.getHooks(eventName)
   if (!hooks) {
     return (req, res, next) => {
@@ -24,7 +24,7 @@ function runHooks(resource, eventName) {
  * @param {*} res
  * @param {function} next
  */
-function finalize(req, res, next) {
+function finalize (req, res, next) {
   return res.send({ status: true, data: req.toSend })
 }
 
@@ -33,7 +33,7 @@ function finalize(req, res, next) {
  * @param {Object} config
  * @param {Object} config.controller
  */
-function buildRouter(config) {
+function buildRouter (config) {
   const router = express.Router()
   if (!(config.controller instanceof Controller)) {
     throw new Error('config.controller must be an instance of Controller')
