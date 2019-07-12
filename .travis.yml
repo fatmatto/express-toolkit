@@ -8,6 +8,6 @@ cache:
   directories:
   - node_modules
 install:
-  - npm install -g codecov
+  - npm install -g codecov ava
 script: npm run test-ci
 after_success: codecov
