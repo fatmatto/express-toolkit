@@ -15,6 +15,15 @@ test.beforeEach(t => {
   t.context.app = express()
 })
 
+test('Should throw exception because of wrong controller instance', async t => {
+  const err = await t.throwsAsync(async () => {
+    let _router = router({
+      controller: {}
+    })
+  })
+  t.is(err.message, 'config.controller must be an instance of Controller')
+})
+
 test('Should run all post:find hooks', async t => {
   const ctrl = new Controller({
     name: 'cats',
