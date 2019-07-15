@@ -81,12 +81,12 @@ test('Create a resource', async t => {
 })
 
 test('Create a resource via upsert', async t => {
-  let cat = await ctrl.createViaUpsert({ name: 'Snowball XX' })
+  let cat = await ctrl.createViaUpsert({ name: 'Snowball XXX' }, { name: 'Snowball XX' })
   t.is(cat.name, 'Snowball XX')
 })
 
 test('Update a resource via upsert', async t => {
-  let cat = await ctrl.createViaUpsert({ name: 'Snowball XXI' })
+  let cat = await ctrl.createViaUpsert({ name: 'Snowball XX' }, { name: 'Snowball XXI' })
   t.is(cat.name, 'Snowball XXI')
 })
 
