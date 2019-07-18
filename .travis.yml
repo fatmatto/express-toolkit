@@ -9,5 +9,6 @@ cache:
   - node_modules
 install:
   - npm install -g codecov
+  - npm i
 script: npm run test-ci
 after_success: codecov
