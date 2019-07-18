@@ -54,6 +54,12 @@ function buildRouter (config) {
     return next()
   })
 
+  const createViaUpsertMiddleware = asyncMiddleware(async (req, res, next) => {
+    const resource = await config.controller.createViaUpsert(req.body.search, req.body.data)
+    req.toSend = resource
+    return next()
+  })
+
   const updateByIdMiddleware = asyncMiddleware(async (req, res, next) => {
     let resource = await config.controller.updateById(req.params.id, req.body)
     req.toSend = resource
@@ -106,6 +112,13 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:create'),
     createMiddleware,
     runHooks(config.controller, 'post:create'),
+    finalize
+  )
+
+  router.post('/upsert',
+    runHooks(config.controller, 'pre:upsert'),
+    createViaUpsertMiddleware,
+    runHooks(config.controller, 'post:upsert'),
     finalize
   )
 

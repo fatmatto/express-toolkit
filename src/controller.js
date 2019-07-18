@@ -105,6 +105,10 @@ class Controller {
     return savedInstance.toJSON()
   }
 
+  createViaUpsert (search, data) {
+    return this.Model.findOneAndUpdate(search, data, { useFindAndModify: false, new: true, upsert: true, setDefaultsOnInsert: true })
+  }
+
   /**
   * Update records by query
   * @param {Object} query The query to match records to update
