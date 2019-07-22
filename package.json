@@ -1,6 +1,6 @@
 {
   "name": "express-toolkit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Handy tools for building expressjs based http microservices",
   "main": "index.js",
   "repository": {

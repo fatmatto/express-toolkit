@@ -1,6 +1,22 @@
+## <small>0.2.1 (2019-07-22)</small>
+
+* (doc) Add hooks documentation to README [ci skip] ([eda521c](https://github.com/fatmatto/express-toolkit/commit/eda521c))
+* Add codecov.io integration ([bb026de](https://github.com/fatmatto/express-toolkit/commit/bb026de))
+* Add repository field to package.json ([04768d9](https://github.com/fatmatto/express-toolkit/commit/04768d9))
+* Added codecov badge ([f2bf911](https://github.com/fatmatto/express-toolkit/commit/f2bf911))
+* cherry pick changes from PR #5 ([48e9f88](https://github.com/fatmatto/express-toolkit/commit/48e9f88)), closes [#5](https://github.com/fatmatto/express-toolkit/issues/5)
+* No console logs ([ca6d64c](https://github.com/fatmatto/express-toolkit/commit/ca6d64c))
+* Switched from Model.remove to new mongoose methods since remove is going to be deprecated ([248234a](https://github.com/fatmatto/express-toolkit/commit/248234a))
+* Update lodash dependency ([c8269c1](https://github.com/fatmatto/express-toolkit/commit/c8269c1))
+* Using new url parser in mongoose helper since old one is going to be deprecated ([0c6fe9b](https://github.com/fatmatto/express-toolkit/commit/0c6fe9b))
+
+
+
 ## 0.2.0 (2019-05-08)
 
+* 🎀 Added badges ([4833660](https://github.com/fatmatto/express-toolkit/commit/4833660))
 * 📖 added README ([1507f65](https://github.com/fatmatto/express-toolkit/commit/1507f65))
+* 📦 Release 0.2.0 ([7d9ba14](https://github.com/fatmatto/express-toolkit/commit/7d9ba14))
 
 
 
