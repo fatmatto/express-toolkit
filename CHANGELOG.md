@@ -1,6 +1,13 @@
+## <small>0.2.2 (2019-07-22)</small>
+
+* Whitelist files for npm release ([b8ea13a](https://github.com/fatmatto/express-toolkit/commit/b8ea13a))
+
+
+
 ## <small>0.2.1 (2019-07-22)</small>
 
 * (doc) Add hooks documentation to README [ci skip] ([eda521c](https://github.com/fatmatto/express-toolkit/commit/eda521c))
+* 📦 Release 0.2.1 ([6466166](https://github.com/fatmatto/express-toolkit/commit/6466166))
 * Add codecov.io integration ([bb026de](https://github.com/fatmatto/express-toolkit/commit/bb026de))
 * Add repository field to package.json ([04768d9](https://github.com/fatmatto/express-toolkit/commit/04768d9))
 * Added codecov badge ([f2bf911](https://github.com/fatmatto/express-toolkit/commit/f2bf911))
