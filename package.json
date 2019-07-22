@@ -3,6 +3,10 @@
   "version": "0.2.0",
   "description": "Handy tools for building expressjs based http microservices",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fatmatto/express-toolkit.git"
+  },
   "scripts": {
     "lint": "npx eslint index.js test/* --fix",
     "test": "nyc --reporter=text ava test/*.spec.js --verbose",
