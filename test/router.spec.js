@@ -7,7 +7,6 @@ const request = require('supertest')
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongooseSetup = require('./helpers/mongoose.helper')
-const Errors = require('throwable-http-errors')
 
 test.before('setup', async () => {
   await mongooseSetup()
@@ -83,7 +82,7 @@ test('Should run all *:count hooks', async t => {
   })
 
   t.context.app.use('/', _router)
-  const res = await request(t.context.app)
+  await request(t.context.app)
     .get('/count')
 
   t.true(spies.pre.called, true)
@@ -120,11 +119,11 @@ test('Should run all *:deleteById hooks', async t => {
   const doggo = await ctrl.create({ name: 'Bobby' })
 
   t.context.app.use('/', _router)
-  const res = await request(t.context.app)
+  await request(t.context.app)
     .delete('/' + doggo._id)
 
-  t.true(spies.pre.called, true)
-  t.true(spies.post.called, true)
+  t.true(spies.pre.called)
+  t.true(spies.post.called)
 })
 
 test('Should run all hooks', async t => {

@@ -34,7 +34,7 @@ test('Should use the custom id key', async t => {
 
 test('Reject invalid resource', async t => {
   const err = await t.throwsAsync(async () => {
-    let p = await ctrl.create({})
+    await ctrl.create({})
   })
   t.is(err.name, 'BadRequest')
 })
@@ -60,7 +60,7 @@ test('Reject updateOne on invalid data', async t => {
 test('Reject updateById on invalid data', async t => {
   let cat = await ctrl.findOne({ name: 'Snowball I' })
   const err = await t.throwsAsync(async () => {
-    let res = await ctrl.updateById(cat._id, { age: ['a', 'b', null] })
+    await ctrl.updateById(cat._id, { age: ['a', 'b', null] })
   })
   t.is(err.name, 'BadRequest')
 })

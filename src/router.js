@@ -1,6 +1,5 @@
 const express = require('express')
 const { asyncMiddleware } = require('./utils')
-const Errors = require('throwable-http-errors')
 const Controller = require('./controller')
 /**
  *
@@ -89,30 +88,69 @@ function buildRouter (config) {
     return next()
   })
 
-  router.get('/count', runHooks(config.controller, 'pre:count'), countMiddleware, runHooks(config.controller, 'post:count'), finalize)
+  router.get(
+    '/count',
+    runHooks(config.controller, 'pre:count'),
+    countMiddleware,
+    runHooks(config.controller, 'post:count'),
+    finalize
+  )
 
-  router.get('/', runHooks(config.controller, 'pre:find'), findMiddleware, runHooks(config.controller, 'post:find'), finalize)
+  router.get(
+    '/',
+    runHooks(config.controller, 'pre:find'),
+    findMiddleware,
+    runHooks(config.controller, 'post:find'),
+    finalize
+  )
 
-  router.get('/:id',
+  router.get(
+    '/:id',
     runHooks(config.controller, 'pre:findById'),
     findByIdMiddleware,
     runHooks(config.controller, 'post:findById'),
-    finalize)
+    finalize
+  )
 
-  router.post('/',
+  router.post(
+    '/',
     runHooks(config.controller, 'pre:create'),
     createMiddleware,
     runHooks(config.controller, 'post:create'),
     finalize
   )
 
-  router.put('/:id', runHooks(config.controller, 'pre:updateById'), updateByIdMiddleware, runHooks(config.controller, 'post:updateById'), finalize)
+  router.put(
+    '/:id',
+    runHooks(config.controller, 'pre:updateById'),
+    updateByIdMiddleware,
+    runHooks(config.controller, 'post:updateById'),
+    finalize
+  )
 
-  router.put('/', runHooks(config.controller, 'pre:update'), updatebyQueryMiddleware, runHooks(config.controller, 'post:update'), finalize)
+  router.put(
+    '/',
+    runHooks(config.controller, 'pre:update'),
+    updatebyQueryMiddleware,
+    runHooks(config.controller, 'post:update'),
+    finalize
+  )
 
-  router.delete('/:id', runHooks(config.controller, 'pre:deleteById'), deleteByIdMiddleware, runHooks(config.controller, 'post:deleteById'), finalize)
+  router.delete(
+    '/:id',
+    runHooks(config.controller, 'pre:deleteById'),
+    deleteByIdMiddleware,
+    runHooks(config.controller, 'post:deleteById'),
+    finalize
+  )
 
-  router.delete('/', runHooks(config.controller, 'pre:delete'), deleteByQueryMiddleware, runHooks(config.controller, 'post:delete'), finalize)
+  router.delete(
+    '/',
+    runHooks(config.controller, 'pre:delete'),
+    deleteByQueryMiddleware,
+    runHooks(config.controller, 'post:delete'),
+    finalize
+  )
 
   return router
 }
