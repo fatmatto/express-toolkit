@@ -1,5 +1,14 @@
+## <small>0.2.3 (2019-07-26)</small>
+
+* Allow custom primary key attribute other than _id ([c05902d](https://github.com/fatmatto/express-toolkit/commit/c05902d))
+* Improved test suite ([6f99f7b](https://github.com/fatmatto/express-toolkit/commit/6f99f7b))
+* Using countDocuments instead of count in mongoose models, because of  deprecation ([39b7c3c](https://github.com/fatmatto/express-toolkit/commit/39b7c3c))
+
+
+
 ## <small>0.2.2 (2019-07-22)</small>
 
+* 📦 Release 0.2.2 ([128cd21](https://github.com/fatmatto/express-toolkit/commit/128cd21))
 * Whitelist files for npm release ([b8ea13a](https://github.com/fatmatto/express-toolkit/commit/b8ea13a))
 
 
