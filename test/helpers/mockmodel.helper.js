@@ -13,4 +13,21 @@ const CatSchema = new mongoose.Schema({
 
 const CatModel = mongoose.model('cat', CatSchema, 'cats')
 
-module.exports = { CatModel, CatSchema }
+const makeModel = (name) => {
+  const schema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true
+    },
+    age: {
+      type: Number,
+      default: 1
+    }
+  }, { strict: true })
+
+  const model = mongoose.model(name, schema, name)
+
+  return model
+}
+
+module.exports = { CatModel, CatSchema, makeModel }

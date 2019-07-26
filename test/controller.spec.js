@@ -1,7 +1,7 @@
 // TODO https://github.com/nodkz/mongodb-memory-server
 import test from 'ava'
 import Controller from '../src/controller'
-import { CatModel } from './helpers/mockmodel.helper'
+import { CatModel, makeModel } from './helpers/mockmodel.helper'
 const mongooseSetup = require('./helpers/mongoose.helper')
 
 const ctrl = new Controller({
@@ -18,6 +18,18 @@ test.before('setup', async () => {
   for (let cat of cats) {
     await ctrl.create(cat)
   }
+})
+
+test('Should use the custom id key', async t => {
+  const c = new Controller({
+    name: 'cats',
+    id: 'name',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: CatModel
+  })
+  let cat = await c.findById('Snowball I')
+  t.is(cat.name, 'Snowball I')
 })
 
 test('Reject invalid resource', async t => {
@@ -58,7 +70,7 @@ test('Reject findOne non existing resource', async t => {
   })
   t.is(err.name, 'NotFound')
 })
-test('Reject getById non existing resource', async t => {
+test('Reject findById non existing resource', async t => {
   const err = await t.throwsAsync(async () => {
     await ctrl.findById('non-existing')
   })
@@ -95,11 +107,63 @@ test('Update by id', async t => {
   let updatedCat = await ctrl.updateById(cat._id, { name: 'Snowball V+' })
   t.is(updatedCat.name, 'Snowball V+')
 })
+test('Delete a resource by id', async t => {
+  let cat = await ctrl.create({ name: 'Snowball Joe' })
+  await ctrl.deleteById(cat._id)
+  const err = await t.throwsAsync(async () => {
+    await ctrl.findById(cat._id)
+  })
+  t.is(err.name, 'NotFound')
+})
 
-test('Delete a resource', async t => {
+test('Delete a resource by query', async t => {
   await ctrl.deleteByQuery({ name: 'Snowball II' })
   const err = await t.throwsAsync(async () => {
     await ctrl.findOne({ name: 'Snowball II' })
   })
   t.is(err.name, 'NotFound')
+})
+
+test('Should handle the skip parameter', async t => {
+  const c = new Controller({
+    name: 'catz',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: CatModel
+  })
+  await Promise.all([
+    c.create({ name: 'Roger' }),
+    c.create({ name: 'Kettle' }),
+    c.create({ name: 'Spike' })
+  ])
+
+  const allCats = await c.find({ sortby: 'name' })
+  const someCats = await c.find({ skip: 1, sortby: 'name' })
+
+  t.is(someCats.length, allCats.length - 1)
+})
+
+test('Should return the resource count', async t => {
+  const c = new Controller({
+    name: 'dogs',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('dog')
+  })
+  await Promise.all([
+    c.create({ name: 'Roger' }),
+    c.create({ name: 'Kettle' }),
+    c.create({ name: 'Spike' })
+  ])
+
+  const count = await c.count({})
+
+  t.is(count, 3)
+})
+
+test('Should throw a type error when passing a non-function argument to registerHook', async t => {
+  const err = await t.throws(() => {
+    ctrl.registerHook('post:create', null)
+  })
+  t.true(err instanceof TypeError)
 })
