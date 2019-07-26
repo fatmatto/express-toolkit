@@ -17,12 +17,14 @@ class Controller {
    * @param {Object} config The configuration object
    * @param {String} config.name The resource name
    * @param {Object} config.model A mongoose model
+   * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
    *
    */
   constructor (config) {
     this.Model = config.model
+    this.id = config.id || '_id'
     this.name = config.name
     this.defaultSkipValue = config.defaultSkipValue || DEFAULT_SKIP_VALUE
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
@@ -75,9 +77,9 @@ class Controller {
 * @param {String | Number} id The object used to query the database
 */
   async findById (id) {
-    const instance = await this.Model.findOne({
-      _id: id
-    })
+    const query = {}
+    query[this.id] = id
+    const instance = await this.Model.findOne(query)
 
     if (instance === null) {
       throw new Errors.NotFound()
@@ -136,9 +138,9 @@ class Controller {
    * @param {Object} update The update to apply
    */
   async updateById (id, update) {
-    let instance = await this.Model.findOne({
-      _id: id
-    })
+    const query = {}
+    query[this.id] = id
+    let instance = await this.Model.findOne(query)
 
     if (instance === null) {
       throw new Errors.NotFound()
@@ -169,7 +171,9 @@ class Controller {
  * @param {String} id The resource's id.
  */
   deleteById (id) {
-    return this.Model.deleteOne({ _id: id })
+    const query = {}
+    query[this.id] = id
+    return this.Model.deleteOne(query)
   }
 
   /**

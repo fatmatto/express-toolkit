@@ -41,9 +41,6 @@ function buildRouter (config) {
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
     let resource = await config.controller.findById(req.params.id)
-
-    if (resource === null) { throw new Errors.NotFound('Cannot find resource with id ' + req.params.id) }
-
     req.toSend = resource
     return next()
   })
