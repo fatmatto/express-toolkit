@@ -181,7 +181,7 @@ class Controller {
    * @param {Object} query
    */
   count (query) {
-    return this.Model.count(query)
+    return this.Model.countDocuments(query)
   }
 
   /**
