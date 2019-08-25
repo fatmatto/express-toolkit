@@ -1,5 +1,15 @@
+## <small>0.2.4 (2019-08-25)</small>
+
+* Add the pre:finalize hook ([25c44d9](https://github.com/fatmatto/express-toolkit/commit/25c44d9))
+* fix lint issues ([9e48042](https://github.com/fatmatto/express-toolkit/commit/9e48042))
+* Fix npm dependencies after audit ([f094770](https://github.com/fatmatto/express-toolkit/commit/f094770))
+* setup codeclimate coverage ([146c769](https://github.com/fatmatto/express-toolkit/commit/146c769))
+
+
+
 ## <small>0.2.3 (2019-07-26)</small>
 
+* 📦 Release 0.2.3 ([afc244d](https://github.com/fatmatto/express-toolkit/commit/afc244d))
 * Allow custom primary key attribute other than _id ([c05902d](https://github.com/fatmatto/express-toolkit/commit/c05902d))
 * Improved test suite ([6f99f7b](https://github.com/fatmatto/express-toolkit/commit/6f99f7b))
 * Using countDocuments instead of count in mongoose models, because of  deprecation ([39b7c3c](https://github.com/fatmatto/express-toolkit/commit/39b7c3c))
