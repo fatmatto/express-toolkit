@@ -33,6 +33,7 @@ npx conventional-changelog -t -i CHANGELOG.md --same-file;
 
 # Build the commit
 git add package.json;
+git add package-lock.json;
 git add CHANGELOG.md;
 
 git commit -m "📦 Release $version"
