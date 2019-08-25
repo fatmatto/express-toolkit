@@ -1,5 +1,12 @@
+## <small>0.2.5 (2019-08-25)</small>
+
+* Update release script ([a4c50b3](https://github.com/fatmatto/express-toolkit/commit/a4c50b3))
+
+
+
 ## <small>0.2.4 (2019-08-25)</small>
 
+* 📦 Release 0.2.4 ([cb1bfff](https://github.com/fatmatto/express-toolkit/commit/cb1bfff))
 * Add the pre:finalize hook ([25c44d9](https://github.com/fatmatto/express-toolkit/commit/25c44d9))
 * fix lint issues ([9e48042](https://github.com/fatmatto/express-toolkit/commit/9e48042))
 * Fix npm dependencies after audit ([f094770](https://github.com/fatmatto/express-toolkit/commit/f094770))
