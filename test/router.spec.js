@@ -142,7 +142,8 @@ test('Should run all hooks', async t => {
     preUpdateByQuery: sinon.spy(),
     postUpdateByQuery: sinon.spy(),
     preCreate: sinon.spy(),
-    postCreate: sinon.spy()
+    postCreate: sinon.spy(),
+    preFinalize: sinon.spy()
   }
 
   ctrl.registerHook('pre:create', (req, res, next) => {
@@ -181,6 +182,10 @@ test('Should run all hooks', async t => {
   })
   ctrl.registerHook('post:findById', (req, res, next) => {
     spies.postFindById()
+    next()
+  })
+  ctrl.registerHook('pre:finalize', (req, res, next) => {
+    spies.preFinalize()
     next()
   })
 
@@ -228,4 +233,5 @@ test('Should run all hooks', async t => {
   t.true(spies.postDeleteByQuery.called)
   t.true(spies.preUpdateByQuery.called)
   t.true(spies.postUpdateByQuery.called)
+  t.true(spies.preFinalize.called)
 })

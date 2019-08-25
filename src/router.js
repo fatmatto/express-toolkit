@@ -93,6 +93,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:count'),
     countMiddleware,
     runHooks(config.controller, 'post:count'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -101,6 +102,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:find'),
     findMiddleware,
     runHooks(config.controller, 'post:find'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -109,6 +111,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:findById'),
     findByIdMiddleware,
     runHooks(config.controller, 'post:findById'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -117,6 +120,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:create'),
     createMiddleware,
     runHooks(config.controller, 'post:create'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -125,6 +129,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:updateById'),
     updateByIdMiddleware,
     runHooks(config.controller, 'post:updateById'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -133,6 +138,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:update'),
     updatebyQueryMiddleware,
     runHooks(config.controller, 'post:update'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -141,6 +147,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:deleteById'),
     deleteByIdMiddleware,
     runHooks(config.controller, 'post:deleteById'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 
@@ -149,6 +156,7 @@ function buildRouter (config) {
     runHooks(config.controller, 'pre:delete'),
     deleteByQueryMiddleware,
     runHooks(config.controller, 'post:delete'),
+    runHooks(config.controller, 'pre:finalize'),
     finalize
   )
 

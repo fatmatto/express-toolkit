@@ -17,7 +17,7 @@ class Controller {
    * @param {Object} config The configuration object
    * @param {String} config.name The resource name
    * @param {Object} config.model A mongoose model
-   * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById
+   * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById. Defaults to _id.
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
    *

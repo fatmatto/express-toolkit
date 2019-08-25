@@ -13,6 +13,14 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
 [![codecov](https://codecov.io/gh/fatmatto/express-toolkit/branch/master/graph/badge.svg)](https://codecov.io/gh/fatmatto/express-toolkit)
 
 
+- [Express Toolkit](#express-toolkit)
+  - [Getting started](#getting-started)
+  - [Default methods](#default-methods)
+  - [Custom primary key](#custom-primary-key)
+  - [Hooks](#hooks)
+      - [List of hooks](#list-of-hooks)
+    - [Examples](#examples)
+
 ## Getting started
 
 Suppose we need to build an http microservice for handling dinosaurs (tired of cats).
@@ -38,6 +46,7 @@ const DinosaurModel = mongoose.model('Dinosaur', DinosaurSchema, 'dinosaurs')
 
 module.exports = {DinosaurSchema, DinosaurModel}
 ```
+
 
 Then the controller file
 
@@ -74,12 +83,41 @@ app.use('/dinosaurs',dinosaursResource)
 // ...
 app.listen(1337)
 ```
+## Default methods
+
+In the following table, every path showed in the Path column is meant to be appended to the resource base path which simply is `/<resourcename>`. Following the dinosaurs examples, would be `/dinosaurs`
+
+
+| Name | Http verb | Path | Description |
+| ---- | --------- | ---- | ----------  |
+| Create | POST | / | Creates a new resource and returns it |
+| List | GET | / | Get a paginated and filtered list of resources of the given type |
+| Update | PUT | /{uuid} | Updates a resource |
+| UpdateByQuery | PUT | / | Updates a resource that matches query parameters |
+
+
+
+## Custom primary key
+
+By defaults, resources are handled as if their primary key is the `_id` field, which is automatically added by mongodb. Sometimes you might want to provide your own key such as an `uuid` field added to the model. For such cases you can provide the id attribute to the controller's config:
+
+```javascript
+const myController = new Controller({
+  model: MyModel,
+  name: 'dinosaurs',
+  id: 'uuid'
+})
+```
+
+
+
 
 ## Hooks
 
 Every resource endpoint can have multiple *pre* and *post* hooks.
 
 #### List of hooks
+
 - pre:find
 - post:find
 - pre:findById
@@ -96,8 +134,14 @@ Every resource endpoint can have multiple *pre* and *post* hooks.
 - post:delete
 - pre:count
 - post:count
+- pre:finalize
 
-#### Examples
+Note, `pre:finalize` is called on every endpoint, just before sending the response payload to the client.
+Here you can hijack `req.toSend` and update it as you need.
+
+For example, you might want to check the `Accept` HTTP header and convert the response from JSON to YAML, or XML.
+
+### Examples
 ```javascript
 const { Controller } = require('express-toolkit')
 const { DinosaurModel } = require('./path/to/dinosaur.model.js')
@@ -125,3 +169,4 @@ myController.registerHook('post:find', (req,res,next) => {
 
 module.exports = myController
 ```
+
