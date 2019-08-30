@@ -90,10 +90,14 @@ In the following table, every path showed in the Path column is meant to be appe
 
 | Name | Http verb | Path | Description |
 | ---- | --------- | ---- | ----------  |
-| Create | POST | / | Creates a new resource and returns it |
+| Create | POST | / | Creates a new resource and returns it. |
 | List | GET | / | Get a paginated and filtered list of resources of the given type |
+| GetById | GET | /{uuid} | Get a resource by id |
 | Update | PUT | /{uuid} | Updates a resource |
 | UpdateByQuery | PUT | / | Updates a resource that matches query parameters |
+| DeleteById | DELETE | /{uuid} | Deletes a resource |
+| DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
+| Count | GET | / | Count resources in collection matching filters in the querysting |
 
 
 
