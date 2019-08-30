@@ -92,7 +92,7 @@ class Controller {
    *
    * @param {Object} data
    */
-  async create (data) {
+  async createSingleInstance (data) {
     const instance = new this.Model(data)
 
     // In testing we don't have the
@@ -105,6 +105,42 @@ class Controller {
     let savedInstance = await instance.save()
 
     return savedInstance.toJSON()
+  }
+
+  /**
+   *  Validates and creates one or more resources
+   * @param {Array | Object} data
+   */
+  create (data) {
+    if (Array.isArray(data)) {
+      return this.bulkCreate(data)
+    } else {
+      return this.createSingleInstance(data)
+    }
+  }
+
+  /**
+   *
+   * @param {Array} data an array of documents to insert
+   */
+  async bulkCreate (data) {
+    const instances = []
+    const savedInstances = []
+    for (let document of data) {
+      const instance = new this.Model(document)
+      let validationError = instance.validateSync()
+      if (validationError) {
+        throw new Errors.BadRequest(validationError.message)
+      }
+      instances.push(instance)
+    }
+
+    for (let instance of instances) {
+      const savedInstance = await instance.save()
+      savedInstances.push(savedInstance.toJSON())
+    }
+
+    return savedInstances
   }
 
   /**

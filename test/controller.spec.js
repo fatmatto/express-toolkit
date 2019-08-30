@@ -87,9 +87,38 @@ test('list resources with limit', async t => {
   t.is(cats.length, 1)
 })
 
+test('Default limit should be set to 100', async t => {
+  const c = new Controller({
+    name: 'fishes',
+    model: makeModel('fishes')
+  })
+  const fishes = []
+  for (let i = 0; i < 105; i++) {
+    fishes.push({ name: `Fish ${i}` })
+  }
+
+  await c.bulkCreate(fishes)
+
+  const fishedFishes = await c.find({})
+
+  t.is(fishedFishes.length, 100)
+})
+
 test('Create a resource', async t => {
   let cat = await ctrl.create({ name: 'Snowball IV' })
   t.is(cat.name, 'Snowball IV')
+})
+
+test('Creates multiple resources', async t => {
+  let cats = await ctrl.create([{ name: 'Snowball IX' }, { name: 'Snowball X' }])
+  t.is(true, Array.isArray(cats))
+})
+
+test('Bulk Create should validate resources', async t => {
+  const err = await t.throwsAsync(async () => {
+    await ctrl.create([{ name: 'Snowball IX' }, {}])
+  })
+  t.is(err.name, 'BadRequest')
 })
 
 test('Find one resource', async t => {
@@ -126,10 +155,10 @@ test('Delete a resource by query', async t => {
 
 test('Should handle the skip parameter', async t => {
   const c = new Controller({
-    name: 'catz',
+    name: 'kangaroos',
     defaultLimitValue: 20,
     defaultSkipValue: 0,
-    model: CatModel
+    model: makeModel('kangaroos')
   })
   await Promise.all([
     c.create({ name: 'Roger' }),
@@ -137,10 +166,10 @@ test('Should handle the skip parameter', async t => {
     c.create({ name: 'Spike' })
   ])
 
-  const allCats = await c.find({ sortby: 'name' })
-  const someCats = await c.find({ skip: 1, sortby: 'name' })
+  const allKangaroos = await c.find({ sortby: 'name' })
+  const someKangaroos = await c.find({ skip: 1, sortby: 'name' })
 
-  t.is(someCats.length, allCats.length - 1)
+  t.not(someKangaroos[0].name, allKangaroos[0].name)
 })
 
 test('Should return the resource count', async t => {
