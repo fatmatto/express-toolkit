@@ -103,7 +103,7 @@ In the following table, every path showed in the Path column is meant to be appe
 
 ## Custom primary key
 
-By defaults, resources are handled as if their primary key is the `_id` field, which is automatically added by mongodb. Sometimes you might want to provide your own key such as an `uuid` field added to the model. For such cases you can provide the id attribute to the controller's config:
+By defaults, resources are handled as if their primary key is the `_id` field, which is automatically added by mongodb. Sometimes you might want to provide your own key such as an `uuid` field added to the model. For such cases you can provide the id attribute to the controller's config:
 
 ```javascript
 const myController = new Controller({
