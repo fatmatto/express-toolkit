@@ -1,5 +1,16 @@
+## <small>0.2.6 (2019-09-12)</small>
+
+* (feature) Implemented endpoints parameter for buildRouter function ([9b6fe38](https://github.com/fatmatto/express-toolkit/commit/9b6fe38))
+* Add bulk create and tests ([d3c7311](https://github.com/fatmatto/express-toolkit/commit/d3c7311))
+* Bump eslint-utils from 1.3.1 to 1.4.2 ([5cd3c35](https://github.com/fatmatto/express-toolkit/commit/5cd3c35))
+* Update readme ([918a4d1](https://github.com/fatmatto/express-toolkit/commit/918a4d1))
+* Update README.md ([a5fd182](https://github.com/fatmatto/express-toolkit/commit/a5fd182))
+
+
+
 ## <small>0.2.5 (2019-08-25)</small>
 
+* 📦 Release 0.2.5 ([fdebaa0](https://github.com/fatmatto/express-toolkit/commit/fdebaa0))
 * Update release script ([a4c50b3](https://github.com/fatmatto/express-toolkit/commit/a4c50b3))
 
 
