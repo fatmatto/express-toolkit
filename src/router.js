@@ -28,15 +28,36 @@ function finalize (req, res, next) {
 }
 
 /**
+ * Endpoints enabled by default
+ */
+const defaultEndpoints = {
+  find: true,
+  findById: true,
+  create: true,
+  updateById: true,
+  updateByQuery: true,
+  deleteById: true,
+  deleteByQuery: true,
+  count: true
+}
+
+/**
  * Builds an expressjs router instance
  * @param {Object} config
  * @param {Object} config.controller
+ * @param {Object} [config.endpoints] Map<String,Boolean>
  */
 function buildRouter (config) {
   const router = express.Router()
   if (!(config.controller instanceof Controller)) {
     throw new Error('config.controller must be an instance of Controller')
   }
+
+  if (Object.prototype.hasOwnProperty.call(config, 'endpoints') && typeof config.endpoints !== 'object') {
+    throw new Error('config.endpoints must be an object')
+  }
+
+  const endpointsMap = Object.assign(defaultEndpoints, config.endpoints)
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
     let resource = await config.controller.findById(req.params.id)
@@ -88,77 +109,92 @@ function buildRouter (config) {
     return next()
   })
 
-  router.get(
-    '/count',
-    runHooks(config.controller, 'pre:count'),
-    countMiddleware,
-    runHooks(config.controller, 'post:count'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.count) {
+    router.get(
+      '/count',
+      runHooks(config.controller, 'pre:count'),
+      countMiddleware,
+      runHooks(config.controller, 'post:count'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
-  router.get(
-    '/',
-    runHooks(config.controller, 'pre:find'),
-    findMiddleware,
-    runHooks(config.controller, 'post:find'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.find) {
+    router.get(
+      '/',
+      runHooks(config.controller, 'pre:find'),
+      findMiddleware,
+      runHooks(config.controller, 'post:find'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
-  router.get(
-    '/:id',
-    runHooks(config.controller, 'pre:findById'),
-    findByIdMiddleware,
-    runHooks(config.controller, 'post:findById'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.findById) {
+    router.get(
+      '/:id',
+      runHooks(config.controller, 'pre:findById'),
+      findByIdMiddleware,
+      runHooks(config.controller, 'post:findById'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
-  router.post(
-    '/',
-    runHooks(config.controller, 'pre:create'),
-    createMiddleware,
-    runHooks(config.controller, 'post:create'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.create) {
+    router.post(
+      '/',
+      runHooks(config.controller, 'pre:create'),
+      createMiddleware,
+      runHooks(config.controller, 'post:create'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
+  if (endpointsMap.updateById) {
+    router.put(
+      '/:id',
+      runHooks(config.controller, 'pre:updateById'),
+      updateByIdMiddleware,
+      runHooks(config.controller, 'post:updateById'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
-  router.put(
-    '/:id',
-    runHooks(config.controller, 'pre:updateById'),
-    updateByIdMiddleware,
-    runHooks(config.controller, 'post:updateById'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.updateByQuery) {
+    router.put(
+      '/',
+      runHooks(config.controller, 'pre:update'),
+      updatebyQueryMiddleware,
+      runHooks(config.controller, 'post:update'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
-  router.put(
-    '/',
-    runHooks(config.controller, 'pre:update'),
-    updatebyQueryMiddleware,
-    runHooks(config.controller, 'post:update'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.deleteById) {
+    router.delete(
+      '/:id',
+      runHooks(config.controller, 'pre:deleteById'),
+      deleteByIdMiddleware,
+      runHooks(config.controller, 'post:deleteById'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
-  router.delete(
-    '/:id',
-    runHooks(config.controller, 'pre:deleteById'),
-    deleteByIdMiddleware,
-    runHooks(config.controller, 'post:deleteById'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
-
-  router.delete(
-    '/',
-    runHooks(config.controller, 'pre:delete'),
-    deleteByQueryMiddleware,
-    runHooks(config.controller, 'post:delete'),
-    runHooks(config.controller, 'pre:finalize'),
-    finalize
-  )
+  if (endpointsMap.deleteByQuery) {
+    router.delete(
+      '/',
+      runHooks(config.controller, 'pre:delete'),
+      deleteByQueryMiddleware,
+      runHooks(config.controller, 'post:delete'),
+      runHooks(config.controller, 'pre:finalize'),
+      finalize
+    )
+  }
 
   return router
 }

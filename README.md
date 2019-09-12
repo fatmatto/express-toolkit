@@ -15,7 +15,8 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
 
 - [Express Toolkit](#express-toolkit)
   - [Getting started](#getting-started)
-  - [Default methods](#default-methods)
+  - [Default endpoints](#default-endpoints)
+  - [Disable endpoints](#disable-endpoints)
   - [Custom primary key](#custom-primary-key)
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
@@ -83,7 +84,7 @@ app.use('/dinosaurs',dinosaursResource)
 // ...
 app.listen(1337)
 ```
-## Default methods
+## Default endpoints
 
 In the following table, every path showed in the Path column is meant to be appended to the resource base path which simply is `/<resourcename>`. Following the dinosaurs examples, would be `/dinosaurs`
 
@@ -99,7 +100,34 @@ In the following table, every path showed in the Path column is meant to be appe
 | DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
 | Count | GET | / | Count resources in collection matching filters in the querysting |
 
+## Disable endpoints
 
+By default, all endpoints are enabled, to control which endpoints should be disabled, you can use the `endpoints` router parameter
+
+```javascript
+// Default behaviour, endpoints is an optional parameter
+const router = buildRouter({
+  controller: require('./mycontroller.js'),
+  endpoints: {
+    find: true,
+    findById: true,
+    create: true,
+    updateById: true,
+    updateByQuery: true,
+    deleteById: true,
+    deleteByQuery: true,
+    count: true
+  }
+})
+// Default resource deletion
+const router = buildRouter({
+  controller: require('./mycontroller.js'),
+  endpoints: {
+    deleteById: true,
+    deleteByQuery: true
+  }
+})
+```
 
 ## Custom primary key
 

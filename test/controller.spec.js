@@ -3,7 +3,7 @@ import test from 'ava'
 import Controller from '../src/controller'
 import { CatModel, makeModel } from './helpers/mockmodel.helper'
 const mongooseSetup = require('./helpers/mongoose.helper')
-
+const Errors = require('throwable-http-errors')
 const ctrl = new Controller({
   name: 'cats',
   defaultLimitValue: 20,
@@ -121,6 +121,32 @@ test('Bulk Create should validate resources', async t => {
   t.is(err.name, 'BadRequest')
 })
 
+test('Bulk update should update all documents', async t => {
+  const c = new Controller({
+    name: 'koalas',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('koalas')
+  })
+  const documents = await Promise.all([
+    c.create({ name: 'Roger' }),
+    c.create({ name: 'Kettle' }),
+    c.create({ name: 'Spike' })
+  ])
+
+  t.is(documents.length, 3)
+
+  await c.bulkUpdate(documents.map(k => {
+    k.name = k.name + ' Junior'
+    return k
+  }))
+
+  const updatedDocuments = await c.find({})
+  t.is(true, updatedDocuments.every(doc => {
+    return doc.name.indexOf('Junior') > -1
+  }))
+})
+
 test('Find one resource', async t => {
   let cat = await ctrl.findOne({ name: 'Snowball I' })
   t.is(cat.name, 'Snowball I')
@@ -170,6 +196,51 @@ test('Should handle the skip parameter', async t => {
   const someKangaroos = await c.find({ skip: 1, sortby: 'name' })
 
   t.not(someKangaroos[0].name, allKangaroos[0].name)
+})
+
+test('Should handle the sortorder parameter', async t => {
+  const c = new Controller({
+    name: 'butterflies',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('butterflies')
+  })
+  await Promise.all([
+    c.create({ name: 'Fiona' }),
+    c.create({ name: 'Andrew' }),
+    c.create({ name: 'Zoe' })
+  ])
+
+  const ZAbutterflies = await c.find({ sortby: 'name', sortorder: 'DESC' })
+  const AZbutterflies = await c.find({ sortby: 'name', sortorder: 'ASC' })
+
+  t.is(ZAbutterflies[0].name, 'Zoe')
+  t.is(AZbutterflies[0].name, 'Andrew')
+})
+
+test('Bulk update should reject updates without id', async t => {
+  const c = new Controller({
+    name: 'cats',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: CatModel
+  })
+  await t.throwsAsync(async () => {
+    await c.bulkUpdate([{ 'Hello': 'World' }])
+  })
+})
+
+test('Should reject a wrong sortorder parameter', async t => {
+  const c = new Controller({
+    name: 'donkeys',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('donkeys')
+  })
+  const err = await t.throwsAsync(async () => {
+    await c.find({ sortorder: 'FOOBAR' })
+  })
+  t.true(err instanceof Errors.BadRequest)
 })
 
 test('Should return the resource count', async t => {

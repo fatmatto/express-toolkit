@@ -25,6 +25,20 @@ test('Should throw error when given a non controller argument', t => {
   })
   t.true(err instanceof Error)
 })
+test('Should throw error when the endpoints parameter is not an object', t => {
+  const err = t.throws(() => {
+    router({
+      endpoints: 0,
+      controller: new Controller({
+        name: 'cats',
+        defaultLimitValue: 20,
+        defaultSkipValue: 0,
+        model: CatModel
+      })
+    })
+  })
+  t.true(err instanceof Error)
+})
 test('Should run all post:find hooks', async t => {
   const ctrl = new Controller({
     name: 'cats',
@@ -52,6 +66,27 @@ test('Should run all post:find hooks', async t => {
     .get('/')
 
   t.is(res.body.data, 'Hello World')
+})
+
+test('Should return 404 for disabled endpoints', async t => {
+  const ctrl = new Controller({
+    name: 'dogs',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('pandas')
+  })
+  let _router = router({
+    controller: ctrl,
+    endpoints: {
+      find: false
+    }
+  })
+  t.context.app.use('/', _router)
+
+  const response = await request(t.context.app)
+    .get('/')
+
+  t.is(404, response.status)
 })
 
 test('Should run all *:count hooks', async t => {

@@ -143,6 +143,22 @@ class Controller {
     return savedInstances
   }
 
+  async bulkUpdate (documents) {
+    if (documents.some(document => {
+      return !Object.hasOwnProperty.apply(document, [this.id])
+    })) {
+      throw new Errors.BadRequest(`All documents must provide the ${this.id} key in order to perform a bulk update.`)
+    }
+    const promises = documents.map(document => {
+      const query = {}
+      query[this.id] = document[this.id]
+      return this.Model.updateOne(query, document)
+    })
+
+    const result = await Promise.all(promises)
+    return result
+  }
+
   /**
   * Update records by query
   * @param {Object} query The query to match records to update
