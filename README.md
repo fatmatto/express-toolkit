@@ -17,6 +17,8 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Getting started](#getting-started)
   - [Default endpoints](#default-endpoints)
   - [Disable endpoints](#disable-endpoints)
+  - [Sorting](#sorting)
+  - [Projection](#projection)
   - [Custom primary key](#custom-primary-key)
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
@@ -128,6 +130,36 @@ const router = buildRouter({
   }
 })
 ```
+
+## Sorting
+
+GET endpoints support result sorting thanks to two query string parameters:
+- `sortorder <String>` that can only have two values: `DESC` for descending sorting and `ASC` for ascending order.
+- `sortby <String>` can be used to select the sorting parameter.
+
+For example, the following request would sort dinosaurs by age, oldest to youngest:
+
+```http
+GET /dinosaurs?sortby=age&sortorder=DESC
+```
+
+## Projection
+
+Sometimes you don't need the whole resource object but just some of its attributes, in these cases you can use the `fields` query string parameter.
+
+Suppose the dinosaur resource has name, type and age attributes, but we just want names and age:
+
+```http
+GET /dinosaurs?fields=name,age
+```
+
+Or just names
+
+```http
+GET /dinosaurs?fields=name
+```
+
+If you don't specify a `fields` parameter, every attribute will be returned.
 
 ## Custom primary key
 

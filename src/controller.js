@@ -4,7 +4,8 @@
  */
 const DEFAULT_LIMIT_VALUE = 100
 const DEFAULT_SKIP_VALUE = 0
-const { getSorting } = require('./utils')
+const DEFAULT_PROJECTION = null
+const { getSorting, getProjection } = require('./utils')
 const Errors = require('throwable-http-errors')
 
 /**
@@ -30,6 +31,7 @@ class Controller {
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
     this.__hooks = {}
   }
+
   /**
    * Looks for records
    * @param {Object} query The query object
@@ -44,16 +46,19 @@ class Controller {
       skip = Number(query.skip)
     }
 
-    let sort = getSorting(query)
+    const projection = getProjection(query)
+
+    const sort = getSorting(query)
 
     // Deleting modifiers from the query
     delete query.skip
     delete query.limit
     delete query.sortby
     delete query.sortorder
+    delete query.fields
 
     return this.Model
-      .find(query)
+      .find(query, projection)
       .sort(sort)
       .skip(skip)
       .limit(limit)
@@ -64,7 +69,9 @@ class Controller {
    * @param {Object} query The object used to query the database
    */
   async findOne (query) {
-    const instance = await this.Model.findOne(query)
+    const projection = getProjection(query)
+    delete query.fields
+    const instance = await this.Model.findOne(query, projection)
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
@@ -79,7 +86,9 @@ class Controller {
   async findById (id) {
     const query = {}
     query[this.id] = id
-    const instance = await this.Model.findOne(query)
+    const projection = getProjection(query)
+    delete query.fields
+    const instance = await this.Model.findOne(query, projection)
 
     if (instance === null) {
       throw new Errors.NotFound()
@@ -97,12 +106,12 @@ class Controller {
 
     // In testing we don't have the
 
-    let validationError = instance.validateSync()
+    const validationError = instance.validateSync()
     if (validationError) {
       throw new Errors.BadRequest(validationError.message)
     }
 
-    let savedInstance = await instance.save()
+    const savedInstance = await instance.save()
 
     return savedInstance.toJSON()
   }
@@ -126,16 +135,16 @@ class Controller {
   async bulkCreate (data) {
     const instances = []
     const savedInstances = []
-    for (let document of data) {
+    for (const document of data) {
       const instance = new this.Model(document)
-      let validationError = instance.validateSync()
+      const validationError = instance.validateSync()
       if (validationError) {
         throw new Errors.BadRequest(validationError.message)
       }
       instances.push(instance)
     }
 
-    for (let instance of instances) {
+    for (const instance of instances) {
       const savedInstance = await instance.save()
       savedInstances.push(savedInstance.toJSON())
     }
@@ -166,7 +175,7 @@ class Controller {
   * @return {Promise}
   */
   async updateByQuery (query, update) {
-    let instance = await this.Model.findOne(query)
+    const instance = await this.Model.findOne(query)
 
     if (instance === null) {
       throw new Errors.NotFound()
@@ -176,7 +185,7 @@ class Controller {
       instance.set(k, update[k])
     }
 
-    let validationError = instance.validateSync()
+    const validationError = instance.validateSync()
     if (validationError) {
       throw new Errors.BadRequest(validationError.message)
     }
@@ -192,7 +201,7 @@ class Controller {
   async updateById (id, update) {
     const query = {}
     query[this.id] = id
-    let instance = await this.Model.findOne(query)
+    const instance = await this.Model.findOne(query)
 
     if (instance === null) {
       throw new Errors.NotFound()
@@ -202,7 +211,7 @@ class Controller {
       instance.set(k, update[k])
     }
 
-    let validationError = instance.validateSync()
+    const validationError = instance.validateSync()
     if (validationError) {
       throw new Errors.BadRequest(validationError.message)
     }

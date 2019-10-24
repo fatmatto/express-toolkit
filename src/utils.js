@@ -16,7 +16,7 @@ const asyncMiddleware = fn =>
  * @param {String} str The string to test
  * @return true if the string is valid json
  */
-let isJSON = (str) => {
+const isJSON = (str) => {
   try {
     return (JSON.parse(str) && !!str)
   } catch (e) {
@@ -30,7 +30,7 @@ let isJSON = (str) => {
  * @return {Object} The sorting config
  */
 function getSorting (query) {
-  let sortBy = query.sortby || '_id'
+  const sortBy = query.sortby || '_id'
   let sortOrder = query.sortorder || 'DESC'
 
   if (sortOrder === 'DESC') {
@@ -41,15 +41,31 @@ function getSorting (query) {
     throw new Errors.BadRequest(`sortorder parameter can be "ASC" or "DESC". Got "${sortOrder}."`)
   }
 
-  let sorting = {}
+  const sorting = {}
 
   sorting[sortBy] = sortOrder
 
   return sorting
 }
 
+function getProjection (query) {
+  if (!Object.prototype.hasOwnProperty.call(query, 'fields')) {
+    return null
+  }
+  if (typeof query.fields !== 'string') {
+    throw new Errors.BadRequest('fields parameter should be a string of comma separated field names. Got ' + typeof query.fields + '.')
+  }
+  const fields = {}
+  const tokens = query.fields.split(',')
+  tokens.forEach(token => {
+    fields[token] = 1
+  })
+  return fields
+}
+
 module.exports = {
   getSorting,
+  getProjection,
   asyncMiddleware,
   isJSON
 }
