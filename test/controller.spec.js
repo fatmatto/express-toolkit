@@ -15,7 +15,7 @@ const cats = [{ name: 'Snowball I' }, { name: 'Snowball II' }, { name: 'Snowball
 
 test.before('setup', async () => {
   await mongooseSetup()
-  for (let cat of cats) {
+  for (const cat of cats) {
     await ctrl.create(cat)
   }
 })
@@ -28,7 +28,7 @@ test('Should use the custom id key', async t => {
     defaultSkipValue: 0,
     model: CatModel
   })
-  let cat = await c.findById('Snowball I')
+  const cat = await c.findById('Snowball I')
   t.is(cat.name, 'Snowball I')
 })
 
@@ -58,7 +58,7 @@ test('Reject updateOne on invalid data', async t => {
   t.is(err.name, 'BadRequest')
 })
 test('Reject updateById on invalid data', async t => {
-  let cat = await ctrl.findOne({ name: 'Snowball I' })
+  const cat = await ctrl.findOne({ name: 'Snowball I' })
   const err = await t.throwsAsync(async () => {
     await ctrl.updateById(cat._id, { age: ['a', 'b', null] })
   })
@@ -78,12 +78,12 @@ test('Reject findById non existing resource', async t => {
 })
 
 test('list resources', async t => {
-  let cats = await ctrl.find({})
+  const cats = await ctrl.find({})
   t.is(cats.length, cats.length)
 })
 
 test('list resources with limit', async t => {
-  let cats = await ctrl.find({ limit: 1 })
+  const cats = await ctrl.find({ limit: 1 })
   t.is(cats.length, 1)
 })
 
@@ -105,12 +105,12 @@ test('Default limit should be set to 100', async t => {
 })
 
 test('Create a resource', async t => {
-  let cat = await ctrl.create({ name: 'Snowball IV' })
+  const cat = await ctrl.create({ name: 'Snowball IV' })
   t.is(cat.name, 'Snowball IV')
 })
 
 test('Creates multiple resources', async t => {
-  let cats = await ctrl.create([{ name: 'Snowball IX' }, { name: 'Snowball X' }])
+  const cats = await ctrl.create([{ name: 'Snowball IX' }, { name: 'Snowball X' }])
   t.is(true, Array.isArray(cats))
 })
 
@@ -148,22 +148,22 @@ test('Bulk update should update all documents', async t => {
 })
 
 test('Find one resource', async t => {
-  let cat = await ctrl.findOne({ name: 'Snowball I' })
+  const cat = await ctrl.findOne({ name: 'Snowball I' })
   t.is(cat.name, 'Snowball I')
 })
 
 test('Update one resource', async t => {
-  let cat = await ctrl.updateByQuery({ name: 'Snowball III' }, { name: 'Snowball III+' })
+  const cat = await ctrl.updateByQuery({ name: 'Snowball III' }, { name: 'Snowball III+' })
   t.is(cat.name, 'Snowball III+')
 })
 
 test('Update by id', async t => {
-  let cat = await ctrl.findOne({ name: 'Snowball V' })
-  let updatedCat = await ctrl.updateById(cat._id, { name: 'Snowball V+' })
+  const cat = await ctrl.findOne({ name: 'Snowball V' })
+  const updatedCat = await ctrl.updateById(cat._id, { name: 'Snowball V+' })
   t.is(updatedCat.name, 'Snowball V+')
 })
 test('Delete a resource by id', async t => {
-  let cat = await ctrl.create({ name: 'Snowball Joe' })
+  const cat = await ctrl.create({ name: 'Snowball Joe' })
   await ctrl.deleteById(cat._id)
   const err = await t.throwsAsync(async () => {
     await ctrl.findById(cat._id)
@@ -218,6 +218,21 @@ test('Should handle the sortorder parameter', async t => {
   t.is(AZbutterflies[0].name, 'Andrew')
 })
 
+test('Should handle the fields parameter', async t => {
+  const c = new Controller({
+    name: 'bees',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('bees')
+  })
+  await c.create({ name: 'Fiona', age: 7 })
+
+  const result = await c.findOne({ name: 'Fiona', fields: 'age' })
+
+  t.is(!result.hasOwnProperty('name'), true)
+  t.is(result.age, 7)
+})
+
 test('Bulk update should reject updates without id', async t => {
   const c = new Controller({
     name: 'cats',
@@ -226,7 +241,7 @@ test('Bulk update should reject updates without id', async t => {
     model: CatModel
   })
   await t.throwsAsync(async () => {
-    await c.bulkUpdate([{ 'Hello': 'World' }])
+    await c.bulkUpdate([{ Hello: 'World' }])
   })
 })
 
