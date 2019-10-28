@@ -57,7 +57,7 @@ test('Should run all post:find hooks', async t => {
     next()
   })
 
-  let _router = router({
+  const _router = router({
     controller: ctrl
   })
 
@@ -75,7 +75,7 @@ test('Should return 404 for disabled endpoints', async t => {
     defaultSkipValue: 0,
     model: makeModel('pandas')
   })
-  let _router = router({
+  const _router = router({
     controller: ctrl,
     endpoints: {
       find: false
@@ -112,7 +112,7 @@ test('Should run all *:count hooks', async t => {
     next()
   })
 
-  let _router = router({
+  const _router = router({
     controller: ctrl
   })
 
@@ -120,8 +120,8 @@ test('Should run all *:count hooks', async t => {
   await request(t.context.app)
     .get('/count')
 
-  t.true(spies.pre.called, true)
-  t.true(spies.post.called, true)
+  t.true(spies.pre.called)
+  t.true(spies.post.called)
 })
 
 test('Should run all *:deleteById hooks', async t => {
@@ -147,7 +147,7 @@ test('Should run all *:deleteById hooks', async t => {
     next()
   })
 
-  let _router = router({
+  const _router = router({
     controller: ctrl
   })
 
@@ -224,7 +224,7 @@ test('Should run all hooks', async t => {
     next()
   })
 
-  let _router = router({
+  const _router = router({
     controller: ctrl
   })
 
