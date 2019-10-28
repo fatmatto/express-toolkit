@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import MongoMemoryServer from 'mongodb-memory-server'
+const mongoose = require('mongoose')
+const { MongoMemoryServer } = require('mongodb-memory-server')
 
 /**
  * @returns {Promise}
