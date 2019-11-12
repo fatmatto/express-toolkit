@@ -57,7 +57,7 @@ function buildRouter (config) {
     throw new Error('config.endpoints must be an object')
   }
 
-  const endpointsMap = Object.assign(defaultEndpoints, config.endpoints)
+  const endpointsMap = Object.assign({},defaultEndpoints, config.endpoints)
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
     let resource = await config.controller.findById(req.params.id)
