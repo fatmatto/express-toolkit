@@ -282,3 +282,45 @@ test('Should throw a type error when passing a non-function argument to register
   })
   t.true(err instanceof TypeError)
 })
+
+
+test('UpdateById Should use partial updates correctly', async t => {
+  const c = new Controller({
+    name: 'Zebras',
+    id:'name',
+    model: makeModel('zebra'),
+    usePartialUpdates:true
+  })
+  const c2 = new Controller({
+    name: 'Zebras',
+    id: 'name',
+    model: makeModel('zebra2'),
+    usePartialUpdates: false
+  })
+  const ginger = await c.create({ name: 'Ginger' })
+  const roger = await c2.create({name: 'Roger'})
+  t.is(ginger.features.color,'purple')
+  t.is(roger.features.color,'purple')
+  const updatedGinger = await c.updateById(ginger.name,{features:{length:'1cm'}})
+  t.is(updatedGinger.features.color, 'purple')
+  t.is(updatedGinger.features.length, '1cm')
+  const updatedRoger = await c2.updateById(roger.name,{features:{length:'1cm'}})
+  t.falsy(updatedRoger.features.color)
+  t.is(updatedRoger.features.length, '1cm')
+  
+})
+
+
+test('UpdateByQuery Should use partial updates correctly', async t => {
+  const c = new Controller({
+    name: 'Zebras',
+    id: 'name',
+    model: makeModel('zebra3'),
+    usePartialUpdates: true
+  })
+  const ginger = await c.create({ name: 'Ginger' })
+  t.is(ginger.features.color, 'purple')
+  const updatedGinger = await c.updateByQuery({name:ginger.name}, { features: { length: '1cm' } })
+  t.is(updatedGinger.features.color, 'purple')
+  t.is(updatedGinger.features.length, '1cm')
+})

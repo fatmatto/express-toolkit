@@ -19,6 +19,7 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Disable endpoints](#disable-endpoints)
   - [Sorting](#sorting)
   - [Projection](#projection)
+  - [Partial updates](#partial-updates)
   - [Custom primary key](#custom-primary-key)
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
@@ -160,6 +161,70 @@ GET /dinosaurs?fields=name
 ```
 
 If you don't specify a `fields` parameter, every attribute will be returned.
+
+## Partial updates
+
+By default, updating a property which is an object would result in overwriting the whole object. To change this behaviour and enable more granular control over updates, you can use the `usePartialUpdates` controller option.
+
+Let's say that your documents look like:
+```json
+{
+  "uuid":"1234",
+  "name": "John",
+  "features": {
+    "eyes": {
+      "color":"blue",
+      "size":"big"
+    },
+    "body":{
+      "height":"190cm",
+      "weigth":"85kg"
+    }
+  }
+}
+```
+
+Without usePartialUpdates, the following request would replace the whole "features" property:
+
+```bash
+curl -XPUT https://example.com/api/v1/people/1234 \
+-H 'Content-Type:application/json'
+-d '{"features": { "eyes" : { "color" : "red" } } }'
+```
+
+Resulting in the following object
+```json
+{
+  "uuid":"1234",
+  "name": "John",
+  "features": {
+    "eyes": {
+      "color":"re",
+    },
+    
+  }
+}
+```
+
+With `usePartialUpdates` it would change only the color property of eyes:
+
+```json
+{
+  "uuid":"1234",
+  "name": "John",
+  "features": {
+    "eyes": {
+      "color":"red",
+      "size":"big"
+    },
+    "body":{
+      "height":"190cm",
+      "weigth":"85kg"
+    }
+  }
+}
+```
+
 
 ## Custom primary key
 

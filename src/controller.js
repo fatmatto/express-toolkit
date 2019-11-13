@@ -2,11 +2,15 @@
 /**
  * @module express-toolkit/Controller
  */
+const Errors = require('throwable-http-errors')
+const flatten = require('flat')
+const { getSorting, getProjection } = require('./utils')
+
 const DEFAULT_LIMIT_VALUE = 100
 const DEFAULT_SKIP_VALUE = 0
 const DEFAULT_PROJECTION = null
-const { getSorting, getProjection } = require('./utils')
-const Errors = require('throwable-http-errors')
+
+
 
 /**
  * Implements a REST resource controller
@@ -21,6 +25,7 @@ class Controller {
    * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById. Defaults to _id.
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
+   * @param {Number} [config.usePartialUpdates] It controls nested updates behaviour. When set to true and an update receives a body in the form {some: { nested : {path:1}}}, the controller will translate the update into a "deep update" like  {$set: "some.nested.path":1 }. When set to false (default) : {$set:{some: { nested : {path:1}}}}
    *
    */
   constructor (config) {
@@ -29,6 +34,7 @@ class Controller {
     this.name = config.name
     this.defaultSkipValue = config.defaultSkipValue || DEFAULT_SKIP_VALUE
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
+    this.usePartialUpdates = config.usePartialUpdates || false
     this.__hooks = {}
   }
 
@@ -180,6 +186,10 @@ class Controller {
     if (instance === null) {
       throw new Errors.NotFound()
     }
+    // When partial updates are on, we need to flatten the update object
+    if (this.usePartialUpdates) {
+      update = flatten(update)
+    }
 
     for (var k in update) {
       instance.set(k, update[k])
@@ -205,6 +215,11 @@ class Controller {
 
     if (instance === null) {
       throw new Errors.NotFound()
+    }
+
+    // When partial updates are on, we need to flatten the update object
+    if (this.usePartialUpdates) {
+      update = flatten(update)
     }
 
     for (var k in update) {
@@ -249,8 +264,8 @@ class Controller {
    * Registers a Hook function for the given event. Possible values for eventName are
    * - pre:create
    * - post:create
-   * - pre:update
-   * - post:update
+   * - pre:updateById
+   * - post:updateById
    * - pre:delete
    * - post:delete
    * - pre:findOne
