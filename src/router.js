@@ -7,7 +7,7 @@ const Controller = require('./controller')
  * @param {String} eventName
  */
 function runHooks (resource, eventName) {
-  let hooks = resource.getHooks(eventName)
+  const hooks = resource.getHooks(eventName)
   if (!hooks) {
     return (req, res, next) => {
       next()
@@ -57,28 +57,28 @@ function buildRouter (config) {
     throw new Error('config.endpoints must be an object')
   }
 
-  const endpointsMap = Object.assign({},defaultEndpoints, config.endpoints)
+  const endpointsMap = Object.assign({}, defaultEndpoints, config.endpoints)
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    let resource = await config.controller.findById(req.params.id)
+    const resource = await config.controller.findById(req.params.id)
     req.toSend = resource
     return next()
   })
 
   const createMiddleware = asyncMiddleware(async (req, res, next) => {
-    let resource = await config.controller.create(req.body)
+    const resource = await config.controller.create(req.body)
     req.toSend = resource
     return next()
   })
 
   const updateByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    let resource = await config.controller.updateById(req.params.id, req.body)
+    const resource = await config.controller.updateById(req.params.id, req.body)
     req.toSend = resource
     return next()
   })
 
   const updatebyQueryMiddleware = asyncMiddleware(async (req, res, next) => {
-    let resource = await config.controller.updateByQuery(req.query, req.body)
+    const resource = await config.controller.updateByQuery(req.query, req.body)
     req.toSend = resource
     return next()
   })
@@ -96,15 +96,15 @@ function buildRouter (config) {
   })
 
   const countMiddleware = asyncMiddleware(async (req, res, next) => {
-    let query = req.query
-    let count = await config.controller.count(query)
+    const query = req.query
+    const count = await config.controller.count(query)
     req.toSend = { count: count }
     return next()
   })
 
   const findMiddleware = asyncMiddleware(async (req, res, next) => {
-    let query = req.query
-    let resources = await config.controller.find(query)
+    const query = req.query
+    const resources = await config.controller.find(query)
     req.toSend = resources
     return next()
   })
