@@ -4,7 +4,6 @@
  */
 const DEFAULT_LIMIT_VALUE = 100
 const DEFAULT_SKIP_VALUE = 0
-const DEFAULT_PROJECTION = null
 const { getSorting, getProjection } = require('./utils')
 const Errors = require('throwable-http-errors')
 
