@@ -14,7 +14,8 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
 
 
 - [Express Toolkit](#express-toolkit)
-  - [Getting started](#getting-started)
+  - [TL;DR](#tldr)
+  - [Models, Controllers and Routers](#models-controllers-and-routers)
   - [Default endpoints](#default-endpoints)
   - [Disable endpoints](#disable-endpoints)
   - [Sorting](#sorting)
@@ -23,8 +24,48 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
     - [Examples](#examples)
+## TL;DR
 
-## Getting started
+With express-toolkit you can easily create a basic REST resource and mount it into an express application. The app will provide basic CRUD methods:
+
+```javascript
+const express = require('express')
+const Resource = require('../../src/resource')
+const mongoose = require('mongoose')
+
+// Let's create our Model with Mongoose
+const schema = new mongoose.Schema({
+  name: String
+})
+
+const PetsResource = new Resource({
+  name: 'pets',
+  id: 'uuid',
+  model: mongoose.model('pets', schema, 'pets')
+})
+
+// Now the Express related stuff
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+// Here we mount the Pets resource under the /pets path
+PetsResource.mount('/pets', app)
+
+// After mongoose is ready, we start listening on the TCP port
+mongoose.connect('mongodb://localhost:27017/pets', {})
+  .then(() => {
+    console.log('Connection to Mongodb Established')
+    app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+  })
+  .catch(error => {
+    console.log('Unable to establish connection to Mongodb', error)
+  })
+
+```
+
+## Models, Controllers and Routers
 
 Suppose we need to build an http microservice for handling dinosaurs (tired of cats).
 

@@ -1,5 +1,6 @@
 module.exports = {
-  Controller: require('./src/controller'),
   buildRouter: require('./src/router'),
+  Controller: require('./src/controller'),
+  Resource: require('./src/resource'),
   utils: require('./src/utils')
 }
