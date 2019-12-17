@@ -97,8 +97,8 @@ class Controller {
   }
 
   /**
-   *
-   * @param {Object} data
+   * Validates and creates a single resource instance. Used by create.
+   * @param {Object} data Resource data
    */
   async createSingleInstance (data) {
     const instance = new this.Model(data)
@@ -117,7 +117,7 @@ class Controller {
 
   /**
    *  Validates and creates one or more resources
-   * @param {Array | Object} data
+   * @param {Array | Object} data Resource(s) data
    */
   create (data) {
     if (Array.isArray(data)) {
@@ -128,8 +128,8 @@ class Controller {
   }
 
   /**
-   *
-   * @param {Array} data an array of documents to insert
+   * Validates and creates multiple resource instances. Used by create.
+   * @param {Array} data An array of documents to insert
    */
   async bulkCreate (data) {
     const instances = []
@@ -151,6 +151,10 @@ class Controller {
     return savedInstances
   }
 
+  /**
+  * updates multiple documents at once
+  * @param {Array} data An array of documents to update
+  */
   async bulkUpdate (documents) {
     if (documents.some(document => {
       return !Object.hasOwnProperty.apply(document, [this.id])
@@ -168,7 +172,7 @@ class Controller {
   }
 
   /**
-  * Update records by query
+  * Updates records matched query with the update object
   * @param {Object} query The query to match records to update
   * @param {Object} update The update to apply
   * @return {Promise}
@@ -238,7 +242,7 @@ class Controller {
 
   /**
    * Returns the number of records matching the query
-   * @param {Object} query
+   * @param {Object} query An object to use as filter
    */
   count (query) {
     return this.Model.countDocuments(query)
@@ -246,16 +250,24 @@ class Controller {
 
   /**
    * Registers a Hook function for the given event. Possible values for eventName are
+   * - pre:count
+   * - post:count
+   * - pre:find
+   * - post:find
+   * - pre:findById
+   * - post:findById
    * - pre:create
    * - post:create
-   * - pre:update
-   * - post:update
-   * - pre:delete
-   * - post:delete
-   * - pre:findOne
-   * - post:findOne
-   * @param {String} eventName
-   * @param {Function} handler
+   * - pre:updateById
+   * - post:updateById
+   * - pre:updateByQuery
+   * - post:updateByQuery
+   * - pre:deleteById
+   * - post:deleteById
+   * - pre:deleteByQuery
+   * - post:deleteByQuery
+   * @param {String} eventName The event that will trigger the hook
+   * @param {Function} handler The express middleware to use as hook
    */
   registerHook (eventName, handler) {
     if (typeof handler !== 'function') {
@@ -267,6 +279,10 @@ class Controller {
     this.__hooks[eventName].push(handler)
   }
 
+  /**
+   * Returns a list of middleware hooks registered under the given event
+   * @param {String} eventName The hook event name, like pre:find or post:create
+   */
   getHooks (eventName) {
     return this.__hooks[eventName]
   }
