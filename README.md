@@ -219,10 +219,15 @@ const myController = new Controller({
 
 ## Hooks
 
-Every resource endpoint can have multiple *pre* and *post* hooks.
+Every resource endpoint can have multiple *pre* and *post* hooks. These hooks will be run by the router before and after the related controller method.
+
+Typically, in `pre` hooks you will want to manually edit requests or do some kind of prior validation on the request, while on `post` hooks you would fetch/add more data or generate other actions such as logging business logic events.
 
 #### List of hooks
 
+- pre:finalize
+- pre:count
+- post:count
 - pre:find
 - post:find
 - pre:findById
@@ -231,15 +236,12 @@ Every resource endpoint can have multiple *pre* and *post* hooks.
 - post:create
 - pre:updateById
 - post:updateById
-- pre:update
-- post:update
-- pre:delete
-- post:delete
+- pre:updateByQuery
+- post:updateByQuery
 - pre:deleteById
-- post:delete
-- pre:count
-- post:count
-- pre:finalize
+- post:deleteById
+- pre:deleteByQuery
+- post:deleteByQuery
 
 Note, `pre:finalize` is called on every endpoint, just before sending the response payload to the client.
 Here you can hijack `req.toSend` and update it as you need.

@@ -250,6 +250,7 @@ class Controller {
 
   /**
    * Registers a Hook function for the given event. Possible values for eventName are
+   * - pre:finalize
    * - pre:count
    * - post:count
    * - pre:find
