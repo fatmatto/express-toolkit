@@ -28,8 +28,7 @@ npm --no-git-tag-version version $versionType || exit 1
 version="$(grep '"version"' package.json | cut -d'"' -f4)"
 
 # Generate changelog from commits
-rm CHANGELOG.md;
-npx conventional-changelog -t -i CHANGELOG.md --same-file;
+npx simple-changelog --out=./CHANGELOG.md;
 
 # Build the commit
 git add package.json;
