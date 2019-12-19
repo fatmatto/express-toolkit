@@ -1,4 +1,3 @@
-// TODO https://github.com/nodkz/mongodb-memory-server
 import test from 'ava'
 import Controller from '../src/controller'
 import { CatModel, makeModel } from './helpers/mockmodel.helper'

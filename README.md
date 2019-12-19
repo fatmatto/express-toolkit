@@ -14,7 +14,8 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
 
 
 - [Express Toolkit](#express-toolkit)
-  - [Getting started](#getting-started)
+  - [TL;DR](#tldr)
+  - [Models, Controllers and Routers](#models-controllers-and-routers)
   - [Default endpoints](#default-endpoints)
   - [Disable endpoints](#disable-endpoints)
   - [Sorting](#sorting)
@@ -23,8 +24,85 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
     - [Examples](#examples)
+## TL;DR
 
-## Getting started
+With express-toolkit you can easily create a basic REST resource and mount it into an express application. The app will provide basic CRUD methods:
+
+```javascript
+const express = require('express')
+const Resource = require('../../src/resource')
+const mongoose = require('mongoose')
+
+// Let's create our Model with Mongoose
+const schema = new mongoose.Schema({
+  name: String
+})
+
+const PetsResource = new Resource({
+  name: 'pets',
+  id: 'uuid',
+  model: mongoose.model('pets', schema, 'pets')
+})
+
+// Now the Express related stuff
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+// Here we mount the Pets resource under the /pets path
+PetsResource.mount('/pets', app)
+
+// After mongoose is ready, we start listening on the TCP port
+mongoose.connect('mongodb://localhost:27017/pets', {})
+  .then(() => {
+    console.log('Connection to Mongodb Established')
+    app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+  })
+  .catch(error => {
+    console.log('Unable to establish connection to Mongodb', error)
+  })
+
+```
+
+Under the hood, the resource object uses three other objects: Model, Controller and Router.
+
+- Routers are plain express routers to which the library mounts some default REST routes
+- Controllers implement CRUD methods
+- Models define a mongoose model
+
+When you create a resource object, the library will create a model a controller and a router for you, if you need to add custom logic to those components you can retrieve them as properties of the resource:
+```javascript
+// Let's create our Model with Mongoose
+const schema = new mongoose.Schema({
+  name: String
+})
+
+const PetsResource = new Resource({
+  name: 'pets',
+  id: 'uuid',
+  model: mongoose.model('pets', schema, 'pets')
+})
+
+// Let's add a hook to the controller
+const ctrl = PetsResource.controller
+
+// more on this method later in this document
+ctrl.registerHook('post:create',(req,res,next) => {
+  console.log("Hello I created a resource")
+  next()
+})
+
+
+// Let's add a custom route to the router
+const router = PetsResource.model
+
+router.get('/hello/world',(req,res,next) => {
+  res.send("Hello")
+})
+```
+
+## Models, Controllers and Routers
 
 Suppose we need to build an http microservice for handling dinosaurs (tired of cats).
 
@@ -178,10 +256,15 @@ const myController = new Controller({
 
 ## Hooks
 
-Every resource endpoint can have multiple *pre* and *post* hooks.
+Every resource endpoint can have multiple *pre* and *post* hooks. These hooks will be run by the router before and after the related controller method.
+
+Typically, in `pre` hooks you will want to manually edit requests or do some kind of prior validation on the request, while on `post` hooks you would fetch/add more data or generate other actions such as logging business logic events.
 
 #### List of hooks
 
+- pre:finalize
+- pre:count
+- post:count
 - pre:find
 - post:find
 - pre:findById
@@ -190,15 +273,12 @@ Every resource endpoint can have multiple *pre* and *post* hooks.
 - post:create
 - pre:updateById
 - post:updateById
-- pre:update
-- post:update
-- pre:delete
-- post:delete
+- pre:updateByQuery
+- post:updateByQuery
 - pre:deleteById
-- post:delete
-- pre:count
-- post:count
-- pre:finalize
+- post:deleteById
+- pre:deleteByQuery
+- post:deleteByQuery
 
 Note, `pre:finalize` is called on every endpoint, just before sending the response payload to the client.
 Here you can hijack `req.toSend` and update it as you need.
