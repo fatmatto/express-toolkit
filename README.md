@@ -65,6 +65,43 @@ mongoose.connect('mongodb://localhost:27017/pets', {})
 
 ```
 
+Under the hood, the resource object uses three other objects: Model, Controller and Router.
+
+- Routers are plain express routers to which the library mounts some default REST routes
+- Controllers implement CRUD methods
+- Models define a mongoose model
+
+When you create a resource object, the library will create a model a controller and a router for you, if you need to add custom logic to those components you can retrieve them as properties of the resource:
+```javascript
+// Let's create our Model with Mongoose
+const schema = new mongoose.Schema({
+  name: String
+})
+
+const PetsResource = new Resource({
+  name: 'pets',
+  id: 'uuid',
+  model: mongoose.model('pets', schema, 'pets')
+})
+
+// Let's add a hook to the controller
+const ctrl = PetsResource.controller
+
+// more on this method later in this document
+ctrl.registerHook('post:create',(req,res,next) => {
+  console.log("Hello I created a resource")
+  next()
+})
+
+
+// Let's add a custom route to the router
+const router = PetsResource.model
+
+router.get('/hello/world',(req,res,next) => {
+  res.send("Hello")
+})
+```
+
 ## Models, Controllers and Routers
 
 Suppose we need to build an http microservice for handling dinosaurs (tired of cats).
