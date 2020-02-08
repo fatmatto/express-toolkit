@@ -109,91 +109,76 @@ function buildRouter (config) {
     return next()
   })
 
-  if (endpointsMap.count) {
-    router.get(
-      '/count',
-      runHooks(config.controller, 'pre:count'),
-      countMiddleware,
-      runHooks(config.controller, 'post:count'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
+  const endpoints = {
+    count: {
+      method: 'get',
+      path: '/count',
+      middleware: countMiddleware
+    },
+    find: {
+      method: 'get',
+      path: '/',
+      middleware: findMiddleware
+    },
+    findById: {
+      method: 'get',
+      path: '/:id',
+      middleware: findByIdMiddleware
+    },
+    create: {
+      method: 'post',
+      path: '/',
+      middleware: createMiddleware
+    },
+    updateById: {
+      method: 'put',
+      path: '/:id',
+      middleware: updateByIdMiddleware
+    },
+    updateByQuery: {
+      method: 'put',
+      path: '/',
+      middleware: updatebyQueryMiddleware
+    },
+    deleteById: {
+      method: 'delete',
+      path: '/:id',
+      middleware: deleteByIdMiddleware
+    },
+    deleteByQuery: {
+      method: 'delete',
+      path: '/',
+      middleware: deleteByQueryMiddleware
+    }
+
   }
 
-  if (endpointsMap.find) {
-    router.get(
-      '/',
-      runHooks(config.controller, 'pre:find'),
-      findMiddleware,
-      runHooks(config.controller, 'post:find'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
-  }
-
-  if (endpointsMap.findById) {
-    router.get(
-      '/:id',
-      runHooks(config.controller, 'pre:findById'),
-      findByIdMiddleware,
-      runHooks(config.controller, 'post:findById'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
-  }
-
-  if (endpointsMap.create) {
-    router.post(
-      '/',
-      runHooks(config.controller, 'pre:create'),
-      createMiddleware,
-      runHooks(config.controller, 'post:create'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
-  }
-  if (endpointsMap.updateById) {
-    router.put(
-      '/:id',
-      runHooks(config.controller, 'pre:updateById'),
-      updateByIdMiddleware,
-      runHooks(config.controller, 'post:updateById'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
-  }
-
-  if (endpointsMap.updateByQuery) {
-    router.put(
-      '/',
-      runHooks(config.controller, 'pre:update'),
-      updatebyQueryMiddleware,
-      runHooks(config.controller, 'post:update'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
-  }
-
-  if (endpointsMap.deleteById) {
-    router.delete(
-      '/:id',
-      runHooks(config.controller, 'pre:deleteById'),
-      deleteByIdMiddleware,
-      runHooks(config.controller, 'post:deleteById'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
-  }
-
-  if (endpointsMap.deleteByQuery) {
-    router.delete(
-      '/',
-      runHooks(config.controller, 'pre:delete'),
-      deleteByQueryMiddleware,
-      runHooks(config.controller, 'post:delete'),
-      runHooks(config.controller, 'pre:finalize'),
-      finalize
-    )
+  for (let endpointName in endpoints) {
+    /**
+     * This is for reto-compatibility reasons, some hooks (due to a bug or a bad design decision)
+     * did not match the middleware name, for example the pre:update hook is run before the updateByQuery
+     * middleware. for this reason we must remap those hooks
+     */
+    let hookName = endpointName
+    if (hookName === 'updateByQuery') {
+      hookName = 'update'
+    }
+    if (hookName === 'deleteByQuery') {
+      hookName = 'delete'
+    }
+    const endpoint = endpoints[endpointName]
+    if (endpointsMap[endpointName]) {
+      router[endpoint.method](
+        endpoint.path,
+        runHooks(config.controller, 'pre:*'),
+        runHooks(config.controller, `pre:${hookName}`),
+        endpoint.middleware,
+        runHooks(config.controller, `post:${hookName}`),
+        runHooks(config.controller, 'post:*'),
+        runHooks(config.controller, 'pre:finalize'),
+        finalize
+      )
+    }
   }
 
   return router

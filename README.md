@@ -262,7 +262,6 @@ Typically, in `pre` hooks you will want to manually edit requests or do some kin
 
 #### List of hooks
 
-- pre:finalize
 - pre:count
 - post:count
 - pre:find
@@ -279,9 +278,23 @@ Typically, in `pre` hooks you will want to manually edit requests or do some kin
 - post:deleteById
 - pre:deleteByQuery
 - post:deleteByQuery
+- pre:*
+- post:*
+- pre:finalize
 
-Note, `pre:finalize` is called on every endpoint, just before sending the response payload to the client.
+`pre:finalize` is called on every endpoint, just before sending the response payload to the client.
 Here you can hijack `req.toSend` and update it as you need.
+
+`pre:*` if defined, is called on every endpoint of that resource before any other "pre" hook, in the same way `post:*` is called after any other post hook. For every endpoint the order is:
+
+- `pre:*`
+- `pre:<methodName>`
+- `middleware`
+- `post:<methodname>`
+- `post:*`
+- `pre:finalize`
+- `finalize`
+
 
 For example, you might want to check the `Accept` HTTP header and convert the response from JSON to YAML, or XML.
 
@@ -293,6 +306,15 @@ const { DinosaurModel } = require('./path/to/dinosaur.model.js')
 const myController = new Controller({
   model: DinosaurModel,
   name: 'dinosaurs'
+})
+
+// Check authorization on all dinosaurs routes:
+myController.registerHook('pre:*', (req,res,next) => {
+  //This is just an example, a bad auth example.
+  if (req.headers.authorization !== "supersecret") {
+    return res.sendStatus(401)
+  }
+  next()
 })
 
 // Force all find queries to look for velociraptor type
