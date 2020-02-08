@@ -27,13 +27,12 @@ npm --no-git-tag-version version $versionType || exit 1
 # Using the package.json version
 version="$(grep '"version"' package.json | cut -d'"' -f4)"
 
-# Generate changelog from commits
-npx easy-changelog --out=./CHANGELOG.md;
+
 
 # Build the commit
 git add package.json;
 git add package-lock.json;
-git add CHANGELOG.md;
+
 
 git commit -m "📦 Release $version"
 
@@ -42,6 +41,12 @@ git tag -a $version -m "📦 Release $version"
 
 # Gotta push them all
 git push origin master --follow-tags;
+
+# Generate changelog from commits
+npx easy-changelog --out=./CHANGELOG.md;
+git add CHANGELOG.md;
+git commit -m "📒 Update CHANGELOG"
+git push origin master
 
 # Release it!
 npm publish
