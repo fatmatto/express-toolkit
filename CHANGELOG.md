@@ -1,6 +1,7 @@
 # 📦 0.3.2 (20 Feb 2020)
 - [f568a](https://github.com/fatmatto/express-toolkit)  📦 Release 0.3.2
 - [4bb43](https://github.com/fatmatto/express-toolkit)  Refactor: use a getter to access the resource's router
+# 📦 0.3.1 (8 Feb 2020)
 - [677f6](https://github.com/fatmatto/express-toolkit)  📦 Release 0.3.1
 - [0a93b](https://github.com/fatmatto/express-toolkit)  Update the release script to generate changelog AFTER the tag is pushed
 - [f3c0e](https://github.com/fatmatto/express-toolkit)  Merge pull request #17 from fatmatto/router-refactor
