@@ -1,3 +1,14 @@
+# 📦 0.3.2 (20 Feb 2020)
+- [f568a](https://github.com/fatmatto/express-toolkit)  📦 Release 0.3.2
+- [4bb43](https://github.com/fatmatto/express-toolkit)  Refactor: use a getter to access the resource's router
+- [677f6](https://github.com/fatmatto/express-toolkit)  📦 Release 0.3.1
+- [0a93b](https://github.com/fatmatto/express-toolkit)  Update the release script to generate changelog AFTER the tag is pushed
+- [f3c0e](https://github.com/fatmatto/express-toolkit)  Merge pull request #17 from fatmatto/router-refactor
+- [24a92](https://github.com/fatmatto/express-toolkit)  Remove node 6 from travis-ci config since we will ot support it, remove deprecated key in travis-ci config.
+- [d845e](https://github.com/fatmatto/express-toolkit)  Update the travis-ci config to test from node 6 to node lts
+- [ab204](https://github.com/fatmatto/express-toolkit)  Refactor router and add pre:*, post:* hooks
+- [3df7e](https://github.com/fatmatto/express-toolkit)  Docs: add changelog
+- [e6586](https://github.com/fatmatto/express-toolkit)  Chore: switch to easy-changelog
 # 📦 0.3.0 (19 Dec 2019)
 - [6286c](https://github.com/fatmatto/express-toolkit)  📦 Release 0.3.0
 - [2c1ea](https://github.com/fatmatto/express-toolkit)  Chore: switch to simple-changelog
