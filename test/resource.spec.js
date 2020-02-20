@@ -67,3 +67,30 @@ test('The router getter should return the private _router property', t => {
   })
   t.is(PetsResource.router, PetsResource._router)
 })
+
+
+test('Hooks should work with resources', async t => {
+  const app = makeApp()
+
+  const PetsResource = new Resource({
+    name: 'pets',
+    endpoints: {
+      deleteById: false
+    },
+    id: 'uuid',
+    model: petsModel
+  })
+
+  PetsResource.controller.registerHook('pre:*',(req,res,next) => {
+    return res.send({hooked:true})
+  })
+
+  PetsResource.mount('/pets', app)
+
+  const resp = await request(app)
+    .post('/pets')
+    .send({ name: 'Wiskers' })
+
+  t.is(resp.status, 200)
+  t.is(resp.body.hooked, true)
+})

@@ -34,8 +34,15 @@ class Resource {
     return this._router
   }
 
+  /**
+   *
+   * @param {String} path The url path to pass to express/connect app.use()
+   * @param {Object} app ExpressJS app
+   */
   mount (path, app) {
-    app.use(path, this._router)
+    // Using getRouter() will ensure that express receives the latest router state
+    // otherwise, express would receive a router which does not take hooks in account
+    app.use(path, this.getRouter())
   }
 
   get router () {
