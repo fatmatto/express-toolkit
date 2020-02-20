@@ -55,3 +55,15 @@ test('Should pass endpoints config to the router', async t => {
 
   t.is(deleteResponse.status, 404)
 })
+
+test('The router getter should return the private _router property', t => {
+  const PetsResource = new Resource({
+    name: 'pets',
+    endpoints: {
+      deleteById: false
+    },
+    id: 'uuid',
+    model: petsModel
+  })
+  t.is(PetsResource.router, PetsResource._router)
+})

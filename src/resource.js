@@ -16,20 +16,30 @@ class Resource {
    */
   constructor (config) {
     this.controller = new Controller(config)
-
     this.model = config.model
+    if (config.endpoints) {
+      this.endpoints = config.endpoints
+    }
+    this._router = this.getRouter()
+  }
 
+  getRouter () {
     const routerConfig = {
       controller: this.controller
     }
-    if (config.endpoints) {
-      routerConfig.endpoints = config.endpoints
+    if (this.endpoints) {
+      routerConfig.endpoints = this.endpoints
     }
-    this.router = makeRouter(routerConfig)
+    this._router = makeRouter(routerConfig)
+    return this._router
   }
 
   mount (path, app) {
-    app.use(path, this.router)
+    app.use(path, this._router)
+  }
+
+  get router () {
+    return this.getRouter()
   }
 }
 
