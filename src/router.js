@@ -83,6 +83,12 @@ function buildRouter (config) {
     return next()
   })
 
+  const patchByIdMiddleware = asyncMiddleware(async (req, res, next) => {
+    const resource = await config.controller.patchById(req.params.id, req.body)
+    req.toSend = resource
+    return next()
+  })
+
   const deleteByIdMiddleware = asyncMiddleware(async (req, res, next) => {
     await config.controller.deleteById(req.params.id)
     req.toSend = null
@@ -139,6 +145,11 @@ function buildRouter (config) {
       method: 'put',
       path: '/',
       middleware: updatebyQueryMiddleware
+    },
+    patchById: {
+      method: 'patch',
+      path: '/:id',
+      middleware: patchByIdMiddleware
     },
     deleteById: {
       method: 'delete',

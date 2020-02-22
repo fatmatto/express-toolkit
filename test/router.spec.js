@@ -176,6 +176,8 @@ test('Should run all hooks', async t => {
     postDeleteByQuery: sinon.spy(),
     preUpdateByQuery: sinon.spy(),
     postUpdateByQuery: sinon.spy(),
+    prePatchById: sinon.spy(),
+    postPatchById: sinon.spy(),
     preCreate: sinon.spy(),
     postCreate: sinon.spy(),
     preFinalize: sinon.spy()
@@ -207,6 +209,15 @@ test('Should run all hooks', async t => {
   })
   ctrl.registerHook('post:update', (req, res, next) => {
     spies.postUpdateByQuery()
+    next()
+  })
+
+  ctrl.registerHook('pre:patchById', (req, res, next) => {
+    spies.prePatchById()
+    next()
+  })
+  ctrl.registerHook('post:patchById', (req, res, next) => {
+    spies.postPatchById()
     next()
   })
 
@@ -255,6 +266,11 @@ test('Should run all hooks', async t => {
   await request(t.context.app)
     .put(`/${doggo._id}`)
     .send({ name: 'Doggo, the usurper' })
+
+  // test updateById hooks
+  await request(t.context.app)
+    .patch(`/${doggo._id}`)
+    .send([{ op: 'replace', path: '/name', value: 'Doggo the patched eye' }])
 
   // Test deleteByQuery
   await request(t.context.app)
