@@ -7,6 +7,7 @@ const request = require('supertest')
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongooseSetup = require('./helpers/mongoose.helper')
+const { makeApp } = require('./helpers/app.helper')
 
 test.before('setup', async () => {
   await mongooseSetup()
@@ -159,6 +160,29 @@ test('Should run all *:deleteById hooks', async t => {
 
   t.true(spies.pre.called)
   t.true(spies.post.called)
+})
+
+test('Should support custom routes', async t => {
+  const app = makeApp()
+  const ctrl = new Controller({
+    name: 'dogs',
+    id: 'uuid',
+    model: makeModel('doggos')
+  })
+  const _router = router({
+    controller: ctrl
+  })
+  _router.get('/foo/bar', (req, res, next) => {
+    res.send({ bar: 'baz' })
+  })
+
+  app.use('/doggos', _router)
+
+  const response = await request(app)
+    .get('/doggos/foo/bar')
+
+  t.is(200, response.status)
+  t.is('baz', response.body.bar)
 })
 
 test('Should run all hooks', async t => {
