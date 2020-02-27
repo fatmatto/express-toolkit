@@ -35,7 +35,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "mongoose": "^5.7.7",
-    "query-params-mongo": "^1.1.0",
     "throwable-http-errors": "^1.0.1"
   },
   "devDependencies": {
