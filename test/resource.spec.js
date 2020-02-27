@@ -119,3 +119,16 @@ test('Custom routes should work with resources', async t => {
   t.is(resp.status, 200)
   t.is(resp.body.bar, 'baz')
 })
+
+test('getRouter should return the router instance', async t => {
+  const PetsResource = new Resource({
+    name: 'pets',
+    endpoints: {
+      deleteById: false
+    },
+    id: 'uuid',
+    model: petsModel
+  })
+
+  t.deepEqual(PetsResource._router, PetsResource.getRouter())
+})
