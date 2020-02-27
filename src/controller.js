@@ -6,7 +6,7 @@ const DEFAULT_LIMIT_VALUE = 100
 const DEFAULT_SKIP_VALUE = 0
 const { getSorting, getProjection } = require('./utils')
 const Errors = require('throwable-http-errors')
-const patchDocument = require('fast-json-patch').applyPatch
+const JSONPatch = require('json8-patch')
 /**
  * Implements a REST resource controller
  * @class Controller
@@ -263,7 +263,11 @@ class Controller {
       throw new Errors.NotFound()
     }
     let document = instance.toObject()
-    document = patchDocument(document, operations).newDocument
+
+    if (!JSONPatch.valid(operations)) {
+      throw new Errors.BadRequest('Invalid JSON Patch format')
+    }
+    document = JSONPatch.apply(document, operations).doc
 
     const updatedInstance = new this.Model(document)
     const validationError = updatedInstance.validateSync()

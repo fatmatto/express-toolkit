@@ -16,7 +16,7 @@
     "test": "nyc --reporter=text ava test/*.spec.js --verbose",
     "test-ci": "npx nyc --reporter=lcov ava test/*.spec.js --verbose",
     "commit": "npx git-cz",
-    "pre-commit":"npm run lint && npm run test && depcheck && npm audit",
+    "pre-commit": "npm run lint && npm run test && depcheck && npm audit",
     "changelog": "rm CHANGELOG.md; npx conventional-changelog -t -i CHANGELOG.md --same-file",
     "release": "sh scripts/release.sh"
   },
@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "express": "^4.17.1",
-    "fast-json-patch": "^3.0.0-1",
+    "json8-patch": "^1.0.1",
     "mongoose": "^5.7.7",
     "throwable-http-errors": "^1.0.1"
   },
