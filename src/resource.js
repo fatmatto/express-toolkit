@@ -1,7 +1,7 @@
 const Controller = require('./controller')
 const makeRouter = require('./router')
 /**
- * Represents a REST resource.
+ * Represents a REST resource, provides an expressjs router you can use in your expressjs app.
  */
 class Resource {
   /**
@@ -24,6 +24,8 @@ class Resource {
   }
 
   /**
+   * Returns the router instance without rebuilding it
+   * @return {Object} The router instance
    * @deprecated
    */
   getRouter () {
@@ -32,6 +34,7 @@ class Resource {
 
   /**
    * Rebuilds the router, this should be used when attaching custom routes to the router.
+   * @returns {Object} The router instance
    */
   rebuildRouter () {
     const routerConfig = {
@@ -45,7 +48,7 @@ class Resource {
   }
 
   /**
-   *
+   * Mounts the resource's router to an express app
    * @param {String} path The url path to pass to express/connect app.use()
    * @param {Object} app ExpressJS app
    */
