@@ -281,3 +281,67 @@ test('Should throw a type error when passing a non-function argument to register
   })
   t.true(err instanceof TypeError)
 })
+
+const HorseModel = makeModel('horse')
+test('Should correctly apply the JSON Patch', async t => {
+  const c = new Controller({
+    name: 'horses',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: HorseModel
+  })
+
+  const instance = await c.create({ name: 'horse-1' })
+  const patch = [ { op: 'replace', path: '/name', value: 'horse-2' } ]
+  const updatedInstance = await c.patchById(instance._id, patch)
+
+  t.is(updatedInstance.name, 'horse-2')
+  t.is(String(updatedInstance._id), String(instance._id))
+})
+
+test('Should correctly reject the invalid JSON Patch', async t => {
+  const c = new Controller({
+    name: 'horses',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: HorseModel
+  })
+
+  const instance = await c.create({ name: 'horse-1' })
+  const patch = [{ op: 'replace', path: '/name', value: null }]
+  const err = await t.throwsAsync(async () => {
+    await c.patchById(instance._id, patch)
+  })
+  t.true(err instanceof Errors.BadRequest)
+})
+
+test('Should correctly reject patch operations on non existing resources', async t => {
+  const c = new Controller({
+    name: 'horses',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: HorseModel
+  })
+
+  const patch = [{ op: 'replace', path: '/name', value: null }]
+  const err = await t.throwsAsync(async () => {
+    await c.patchById('nothingtosee', patch)
+  })
+  t.true(err instanceof Errors.NotFound)
+})
+
+test('Should correctly reject the invalid JSON Patch format', async t => {
+  const c = new Controller({
+    name: 'horses',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: HorseModel
+  })
+
+  const instance = await c.create({ name: 'horse-1' })
+  const patch = [{ op: 'non-existing-op' }]
+  const err = await t.throwsAsync(async () => {
+    await c.patchById(instance._id, patch)
+  })
+  t.true(err instanceof Errors.BadRequest)
+})

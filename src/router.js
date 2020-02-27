@@ -38,7 +38,8 @@ const defaultEndpoints = {
   updateByQuery: true,
   deleteById: true,
   deleteByQuery: true,
-  count: true
+  count: true,
+  patchById: true
 }
 
 /**
@@ -109,6 +110,12 @@ function buildRouter (config) {
     return next()
   })
 
+  const patchByIdMiddleware = asyncMiddleware(async (req, res, next) => {
+    const resource = await config.controller.patchById(req.params.id, req.body)
+    req.toSend = resource
+    return next()
+  })
+
   const endpoints = {
     count: {
       method: 'get',
@@ -149,6 +156,11 @@ function buildRouter (config) {
       method: 'delete',
       path: '/',
       middleware: deleteByQueryMiddleware
+    },
+    patchById: {
+      method: 'patch',
+      path: '/:id',
+      middleware: patchByIdMiddleware
     }
 
   }

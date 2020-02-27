@@ -202,7 +202,9 @@ test('Should run all hooks', async t => {
     postUpdateByQuery: sinon.spy(),
     preCreate: sinon.spy(),
     postCreate: sinon.spy(),
-    preFinalize: sinon.spy()
+    preFinalize: sinon.spy(),
+    prePatch: sinon.spy(),
+    postPatch: sinon.spy()
   }
 
   ctrl.registerHook('pre:create', (req, res, next) => {
@@ -248,6 +250,16 @@ test('Should run all hooks', async t => {
     next()
   })
 
+  ctrl.registerHook('pre:patchById', (req, res, next) => {
+    spies.prePatch()
+    next()
+  })
+
+  ctrl.registerHook('post:patchById', (req, res, next) => {
+    spies.postPatch()
+    next()
+  })
+
   const _router = router({
     controller: ctrl
   })
@@ -280,6 +292,12 @@ test('Should run all hooks', async t => {
     .put(`/${doggo._id}`)
     .send({ name: 'Doggo, the usurper' })
 
+  // test create hooks
+  await request(t.context.app)
+    .patch(`/${doggo._id}`)
+    .send([{ op: 'replace', path: '/name', value: 'Doggo the patched eye' }])
+    .set('Accept', 'application/json')
+
   // Test deleteByQuery
   await request(t.context.app)
     .delete('/')
@@ -293,4 +311,6 @@ test('Should run all hooks', async t => {
   t.true(spies.preUpdateByQuery.called)
   t.true(spies.postUpdateByQuery.called)
   t.true(spies.preFinalize.called)
+  t.true(spies.prePatch.called)
+  t.true(spies.postPatch.called)
 })
