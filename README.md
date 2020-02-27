@@ -174,8 +174,9 @@ In the following table, every path showed in the Path column is meant to be appe
 | Create | POST | / | Creates a new resource and returns it. |
 | List | GET | / | Get a paginated and filtered list of resources of the given type |
 | GetById | GET | /{uuid} | Get a resource by id |
-| Update | PUT | /{uuid} | Updates a resource |
+| UpdateById | PUT | /{uuid} | Updates a resource |
 | UpdateByQuery | PUT | / | Updates a resource that matches query parameters |
+| PatchById | PATCH | /{uuid} | Updates a resource by id using PATCH semantics |
 | DeleteById | DELETE | /{uuid} | Deletes a resource |
 | DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
 | Count | GET | / | Count resources in collection matching filters in the querysting |
@@ -196,7 +197,8 @@ const router = buildRouter({
     updateByQuery: true,
     deleteById: true,
     deleteByQuery: true,
-    count: true
+    count: true,
+    patchById: true
   }
 })
 // Default resource deletion
@@ -278,6 +280,8 @@ Typically, in `pre` hooks you will want to manually edit requests or do some kin
 - post:deleteById
 - pre:deleteByQuery
 - post:deleteByQuery
+- pre:patchById
+- post:patchById
 - pre:*
 - post:*
 - pre:finalize
