@@ -15,7 +15,8 @@ function setupMongoose () {
         autoReconnect: true,
         reconnectTries: Number.MAX_VALUE,
         reconnectInterval: 1000,
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       }
 
       return new Promise((resolve, reject) => {

@@ -68,7 +68,6 @@ test('The router getter should return the private _router property', t => {
   t.is(PetsResource.router, PetsResource._router)
 })
 
-
 test('Hooks should work with resources', async t => {
   const app = makeApp()
 
@@ -81,10 +80,11 @@ test('Hooks should work with resources', async t => {
     model: petsModel
   })
 
-  PetsResource.controller.registerHook('pre:*',(req,res,next) => {
-    return res.send({hooked:true})
+  PetsResource.controller.registerHook('pre:*', (req, res, next) => {
+    return res.send({ hooked: true })
   })
-
+  // This is necessary with resources since the controller changed and the router needs to be rebuilt
+  PetsResource.rebuildRouter()
   PetsResource.mount('/pets', app)
 
   const resp = await request(app)
@@ -93,4 +93,42 @@ test('Hooks should work with resources', async t => {
 
   t.is(resp.status, 200)
   t.is(resp.body.hooked, true)
+})
+
+test('Custom routes should work with resources', async t => {
+  const app = makeApp()
+
+  const PetsResource = new Resource({
+    name: 'pets',
+    endpoints: {
+      deleteById: false
+    },
+    id: 'uuid',
+    model: petsModel
+  })
+
+  PetsResource.router.get('/foo/bar', (req, res, next) => {
+    res.send({ bar: 'baz' })
+  })
+
+  PetsResource.mount('/pets', app)
+
+  const resp = await request(app)
+    .get('/pets/foo/bar')
+
+  t.is(resp.status, 200)
+  t.is(resp.body.bar, 'baz')
+})
+
+test('getRouter should return the router instance', async t => {
+  const PetsResource = new Resource({
+    name: 'pets',
+    endpoints: {
+      deleteById: false
+    },
+    id: 'uuid',
+    model: petsModel
+  })
+
+  t.deepEqual(PetsResource._router, PetsResource.getRouter())
 })
