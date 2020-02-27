@@ -6,7 +6,7 @@ const DEFAULT_LIMIT_VALUE = 100
 const DEFAULT_SKIP_VALUE = 0
 const { getSorting, getProjection } = require('./utils')
 const Errors = require('throwable-http-errors')
-
+const patchDocument = require('fast-json-patch').applyPatch
 /**
  * Implements a REST resource controller
  * @class Controller
@@ -246,6 +246,34 @@ class Controller {
    */
   count (query) {
     return this.Model.countDocuments(query)
+  }
+
+  /**
+ *
+ * @param {String | Number} id The id of the resource to update
+ * @param {Array} operations Array of JSON patch operations to apply to the document
+ */
+  async patchById (id, operations) {
+    const query = {}
+    query[this.id] = id
+
+    const instance = await this.Model.findOne(query)
+
+    if (instance === null) {
+      throw new Errors.NotFound()
+    }
+    let document = instance.toObject()
+    document = patchDocument(document, operations).newDocument
+
+    const updatedInstance = new this.Model(document)
+    const validationError = updatedInstance.validateSync()
+    if (validationError) {
+      throw new Errors.BadRequest(validationError.message)
+    }
+
+    await this.Model.updateOne(query, updatedInstance.toObject())
+
+    return updatedInstance
   }
 
   /**
