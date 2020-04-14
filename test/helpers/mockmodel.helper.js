@@ -22,6 +22,9 @@ const makeModel = (name) => {
     age: {
       type: Number,
       default: 1
+    },
+    owner: {
+      type: String
     }
   }, { strict: true })
 
