@@ -177,7 +177,7 @@ In the following table, every path showed in the Path column is meant to be appe
 | UpdateById | PUT | /{uuid} | Updates a resource |
 | UpdateByQuery | PUT | / | Updates a resource that matches query parameters |
 | PatchById | PATCH | /{uuid} | Updates a resource by id using PATCH semantics |
-| ReplaceById | PUT | /{uuid}/replace | Replaces a resource by id, (primary id field (and _id if not the same) are not replaced) |
+| ReplaceById | PUT | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
 | DeleteById | DELETE | /{uuid} | Deletes a resource |
 | DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
 | Count | GET | / | Count resources in collection matching filters in the querysting |
