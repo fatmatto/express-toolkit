@@ -9,6 +9,9 @@ const ctrl = new Controller({
   defaultSkipValue: 0,
   model: CatModel
 })
+// ObjectIDs do not accept any value, to avoid CastErrors
+// we use this string
+const NON_EXISTING_ID = 'nothingtosee'
 
 const cats = [{ name: 'Snowball I' }, { name: 'Snowball II' }, { name: 'Snowball III' }, { name: 'Snowball V' }]
 
@@ -40,13 +43,13 @@ test('Reject invalid resource', async t => {
 
 test('Reject updateById on non existing resource', async t => {
   const err = await t.throwsAsync(async () => {
-    await ctrl.updateById('nothingtosee')
+    await ctrl.updateById(NON_EXISTING_ID)
   })
   t.is(err.name, 'NotFound')
 })
 test('Reject updateOne on non existing resource', async t => {
   const err = await t.throwsAsync(async () => {
-    await ctrl.updateByQuery({ name: 'nothingtosee' })
+    await ctrl.updateByQuery({ name: NON_EXISTING_ID })
   })
   t.is(err.name, 'NotFound')
 })
@@ -65,7 +68,7 @@ test('Reject updateById on invalid data', async t => {
 })
 test('Reject findOne non existing resource', async t => {
   const err = await t.throwsAsync(async () => {
-    await ctrl.findOne({ name: 'nothingtosee' })
+    await ctrl.findOne({ name: NON_EXISTING_ID })
   })
   t.is(err.name, 'NotFound')
 })
@@ -326,7 +329,7 @@ test('Should correctly reject patch operations on non existing resources', async
 
   const patch = [{ op: 'replace', path: '/name', value: null }]
   const err = await t.throwsAsync(async () => {
-    await c.patchById('nothingtosee', patch)
+    await c.patchById(NON_EXISTING_ID, patch)
   })
   t.true(err instanceof Errors.NotFound)
 })
@@ -347,7 +350,7 @@ test('Should correctly reject the invalid JSON Patch format', async t => {
   t.true(err instanceof Errors.BadRequest)
 })
 
-test('Should correclty replace instances of a resource', async t => {
+test('Should correctly replace instances of a resource', async t => {
   const ZebraModel = makeModel('Zebra')
   const c = new Controller({
     name: 'zebras',
@@ -367,4 +370,40 @@ test('Should correclty replace instances of a resource', async t => {
   t.is(String(replaced._id), String(instance._id))
   t.is(replaced.name, replacement.name)
   t.is(replaced.owner, undefined)
+})
+
+test('Should refuse to replace a non existing resource', async t => {
+  const ZebraModel = makeModel('WeirdZebra')
+  const c = new Controller({
+    name: 'zebras',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: ZebraModel
+  })
+  const replacement = {
+    name: 'Zobry',
+    age: 4
+  }
+
+  const err = await t.throwsAsync(c.replaceById(NON_EXISTING_ID, replacement))
+  t.is(err.name, 'NotFound')
+})
+
+test('Should refuse to replace a resource with invalid data', async t => {
+  const ZebraModel = makeModel('RegularZebra')
+  const c = new Controller({
+    name: 'zebras',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: ZebraModel
+  })
+
+  const instance = await c.create({ name: 'Zeebry', age: 2, owner: 'Harry Potter' })
+  const badReplacement = {
+    age: 4
+  }
+
+  const err = await t.throwsAsync(c.replaceById(instance._id, badReplacement))
+
+  t.is(err.name, 'BadRequest')
 })
