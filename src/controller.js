@@ -20,7 +20,6 @@ class Controller {
    * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById. Defaults to _id.
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
-   *
    */
   constructor (config) {
     this.Model = config.model
@@ -213,6 +212,32 @@ class Controller {
     for (var k in update) {
       instance.set(k, update[k])
     }
+
+    const validationError = instance.validateSync()
+    if (validationError) {
+      throw new Errors.BadRequest(validationError.message)
+    }
+
+    return instance.save()
+  }
+
+  /**
+ *
+ * @param {String | Number} id The id of the resource to update
+ * @param {Object} replacement The replacement object
+ */
+  async replaceById (id, replacement) {
+    const query = {}
+    query[this.id] = id
+    const instance = await this.Model.findOne(query)
+
+    if (instance === null) {
+      throw new Errors.NotFound()
+    }
+    // Primary identifiers cannot be replaced
+    delete replacement['_id']
+    delete replacement[this.id]
+    instance.overwrite(replacement)
 
     const validationError = instance.validateSync()
     if (validationError) {

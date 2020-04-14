@@ -291,11 +291,12 @@ test('Should correctly apply the JSON Patch', async t => {
     model: HorseModel
   })
 
-  const instance = await c.create({ name: 'horse-1' })
-  const patch = [ { op: 'replace', path: '/name', value: 'horse-2' } ]
+  const instance = await c.create({ name: 'horse-1', owner: 'Matt' })
+  const patch = [{ op: 'remove', path: '/owner' }, { op: 'replace', path: '/name', value: 'horse-2' }]
   const updatedInstance = await c.patchById(instance._id, patch)
 
   t.is(updatedInstance.name, 'horse-2')
+  t.is(updatedInstance.owner, undefined)
   t.is(String(updatedInstance._id), String(instance._id))
 })
 
@@ -344,4 +345,26 @@ test('Should correctly reject the invalid JSON Patch format', async t => {
     await c.patchById(instance._id, patch)
   })
   t.true(err instanceof Errors.BadRequest)
+})
+
+test('Should correclty replace instances of a resource', async t => {
+  const ZebraModel = makeModel('Zebra')
+  const c = new Controller({
+    name: 'zebras',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: ZebraModel
+  })
+
+  const instance = await c.create({ name: 'Zeebry', age: 2, owner: 'Harry Potter' })
+  const replacement = {
+    name: 'Zobry',
+    age: 4
+  }
+
+  const replaced = await c.replaceById(instance._id, replacement)
+
+  t.is(String(replaced._id), String(instance._id))
+  t.is(replaced.name, replacement.name)
+  t.is(replaced.owner, undefined)
 })
