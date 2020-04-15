@@ -1,3 +1,7 @@
+# 📦 0.4.1 (15 Apr 2020)
+- [1b660](https://github.com/fatmatto/express-toolkit/commit/1b660e06e70f93468292133c8899f9410b6f3c9f)  📦 Release 0.4.1
+- [359b4](https://github.com/fatmatto/express-toolkit/commit/359b4378d4d6cfb24fd5a7496904c19567bf940f)  bugfix: replaceById should correctly handle custom IDs
+- [62b07](https://github.com/fatmatto/express-toolkit/commit/62b0729beee92d36077e363b6d1779517619a357)  📒 Update CHANGELOG
 # 📦 0.4.0 (14 Apr 2020)
 - [1b44c](https://github.com/fatmatto/express-toolkit/commit/1b44caafa2c7c27240bdbe779380170b54949993)  📦 Release 0.4.0
 - [d630d](https://github.com/fatmatto/express-toolkit/commit/d630df7a6a565188be27bcc6f56bd7013f2a24b9)  Replace resource isntances by Id (#24)
