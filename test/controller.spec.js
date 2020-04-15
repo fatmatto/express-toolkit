@@ -1,6 +1,6 @@
 import test from 'ava'
 import Controller from '../src/controller'
-import { CatModel, makeModel } from './helpers/mockmodel.helper'
+import { CatModel, makeModel, makeModelWithCustomId } from './helpers/mockmodel.helper'
 const mongooseSetup = require('./helpers/mongoose.helper')
 const Errors = require('throwable-http-errors')
 const ctrl = new Controller({
@@ -351,24 +351,28 @@ test('Should correctly reject the invalid JSON Patch format', async t => {
 })
 
 test('Should correctly replace instances of a resource', async t => {
-  const ZebraModel = makeModel('Zebra')
+  // We use custom ids here in order to test interactions between replacement and
+  // custom uuids. A bug caused custom ids to not being handled correctly
+  const ZebraModel = makeModelWithCustomId('Zebra')
   const c = new Controller({
+    id: 'uuid',
     name: 'zebras',
     defaultLimitValue: 20,
     defaultSkipValue: 0,
     model: ZebraModel
   })
 
-  const instance = await c.create({ name: 'Zeebry', age: 2, owner: 'Harry Potter' })
+  const instance = await c.create({ name: 'Zeebry', age: 2, owner: 'Harry Potter', uuid: '1234' })
   const replacement = {
     name: 'Zobry',
     age: 4
   }
 
-  const replaced = await c.replaceById(instance._id, replacement)
+  const replaced = await c.replaceById(instance.uuid, replacement)
 
   t.is(String(replaced._id), String(instance._id))
   t.is(replaced.name, replacement.name)
+  t.is(replaced.uuid, replacement.uuid)
   t.is(replaced.owner, undefined)
 })
 

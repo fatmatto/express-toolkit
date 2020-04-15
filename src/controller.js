@@ -235,8 +235,8 @@ class Controller {
       throw new Errors.NotFound()
     }
     // Primary identifiers cannot be replaced
-    delete replacement['_id']
-    delete replacement[this.id]
+    replacement['_id'] = instance._id
+    replacement[this.id] = instance[this.id]
     instance.overwrite(replacement)
 
     const validationError = instance.validateSync()
