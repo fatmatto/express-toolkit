@@ -1,6 +1,6 @@
-import test from 'ava'
-import Controller from '../src/controller'
-import { CatModel, makeModel, makeModelWithCustomId } from './helpers/mockmodel.helper'
+const { CatModel, makeModel, makeModelWithCustomId } = require('./helpers/mockmodel.helper')
+const Controller = require('../src/controller')
+const test = require('ava')
 const mongooseSetup = require('./helpers/mongoose.helper')
 const Errors = require('throwable-http-errors')
 const ctrl = new Controller({

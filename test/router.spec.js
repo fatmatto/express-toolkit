@@ -1,8 +1,8 @@
-import test from 'ava'
-import sinon from 'sinon'
-import Controller from '../src/controller'
-import router from '../src/router'
-import { CatModel, makeModel } from './helpers/mockmodel.helper'
+const Controller = require('../src/controller')
+const router = require('../src/router')
+const { CatModel, makeModel } = require('./helpers/mockmodel.helper')
+const sinon = require('sinon')
+const test = require('ava')
 const request = require('supertest')
 const express = require('express')
 const bodyParser = require('body-parser')

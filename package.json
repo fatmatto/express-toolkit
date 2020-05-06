@@ -40,7 +40,7 @@
     "throwable-http-errors": "^1.0.1"
   },
   "devDependencies": {
-    "ava": "^2.4.0",
+    "ava": "^3.8.1",
     "body-parser": "^1.19.0",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
