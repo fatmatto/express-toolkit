@@ -44,6 +44,18 @@ const PetsResource = new Resource({
   model: mongoose.model('pets', schema, 'pets')
 })
 
+
+PetsResource.registerHook('pre:find', (req, res, next) => {
+  console.log('Looking for Pets')
+  next()
+})
+
+// Remember to extend the router AFTER adding hooks,
+// otherwise the router will be overwritten without this route
+PetsResource.router.get('/actions/eat',(req,res) => {
+  return res.send('Om nom nom')
+})
+
 // Now the Express related stuff
 const app = express()
 const port = 3000
