@@ -1,6 +1,6 @@
 // TODO https://github.com/nodkz/mongodb-memory-server
-import test from 'ava'
-import * as utils from '../src/utils'
+const test = require('ava')
+const utils = require('../src/utils')
 
 test('Should accept valid json', async t => {
   const j = '{"a":true}'

@@ -48,9 +48,11 @@ const defaultEndpoints = {
  * @param {Object} config
  * @param {Object} config.controller
  * @param {Object} [config.endpoints] Map<String,Boolean>
+ * @param {Object} [config.options] Express router options. As described in https://expressjs.com/en/api.html#express.router
  */
 function buildRouter (config) {
-  const router = express.Router()
+  config.options = config.options || {}
+  const router = express.Router(config.options)
   if (!(config.controller instanceof Controller)) {
     throw new Error('config.controller must be an instance of Controller')
   }
@@ -62,7 +64,7 @@ function buildRouter (config) {
   const endpointsMap = Object.assign({}, defaultEndpoints, config.endpoints)
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.findById(req.params.id)
+    const resource = await config.controller.findById(req.params.id, req.query)
     req.toSend = resource
     return next()
   })
@@ -74,7 +76,7 @@ function buildRouter (config) {
   })
 
   const updateByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.updateById(req.params.id, req.body)
+    const resource = await config.controller.updateById(req.params.id, req.body, req.query)
     req.toSend = resource
     return next()
   })

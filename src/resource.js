@@ -33,7 +33,8 @@ class Resource {
   }
 
   /**
-   * Rebuilds the router, this should be used when attaching custom routes to the router.
+   * Rebuilds the router, this should be used whenever the controller is modified, for example adding a hook.
+   * This behaviour should change in upcoming releases
    * @returns {Object} The router instance
    */
   rebuildRouter () {
@@ -60,6 +61,17 @@ class Resource {
 
   get router () {
     return this._router
+  }
+
+  /**
+ * Registers a Hook function for the given event. Possible values for eventName are listed
+ * here: https://github.com/fatmatto/express-toolkit
+ * @param {String} eventName The event that will trigger the hook
+ * @param {Function} handler The express middleware to use as hook
+ */
+  registerHook (eventName, handler) {
+    this.controller.registerHook(eventName, handler)
+    this.rebuildRouter()
   }
 }
 
