@@ -199,9 +199,9 @@ class Controller {
    *
    * @param {String | Number} id The id of the resource to update
    * @param {Object} update The update to apply
+   * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
    */
-  async updateById (id, update) {
-    const query = {}
+  async updateById (id, update, query = {}) {
     query[this.id] = id
     const instance = await this.Model.findOne(query)
 
@@ -225,9 +225,9 @@ class Controller {
  *
  * @param {String | Number} id The id of the resource to update
  * @param {Object} replacement The replacement object
+ * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
  */
-  async replaceById (id, replacement) {
-    const query = {}
+  async replaceById (id, replacement, query = {}) {
     query[this.id] = id
     const instance = await this.Model.findOne(query)
 
@@ -258,9 +258,9 @@ class Controller {
   /**
  * Removes a resource by id
  * @param {String} id The resource's id.
+ * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
  */
-  deleteById (id) {
-    const query = {}
+  deleteById (id, query = {}) {
     query[this.id] = id
     return this.Model.deleteOne(query)
   }
@@ -277,9 +277,9 @@ class Controller {
  *
  * @param {String | Number} id The id of the resource to update
  * @param {Array} operations Array of JSON patch operations to apply to the document
+ * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
  */
-  async patchById (id, operations) {
-    const query = {}
+  async patchById (id, operations, query = {}) {
     query[this.id] = id
 
     const instance = await this.Model.findOne(query)

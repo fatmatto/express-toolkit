@@ -76,7 +76,7 @@ function buildRouter (config) {
   })
 
   const updateByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.updateById(req.params.id, req.body)
+    const resource = await config.controller.updateById(req.params.id, req.body, req.query)
     req.toSend = resource
     return next()
   })
