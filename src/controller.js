@@ -80,9 +80,9 @@ class Controller {
   /**
 * Looks for a single record with the given id
 * @param {String | Number} id The object used to query the database
+* @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
 */
-  async findById (id) {
-    const query = {}
+  async findById (id, query = {}) {
     query[this.id] = id
     const projection = getProjection(query)
     delete query.fields

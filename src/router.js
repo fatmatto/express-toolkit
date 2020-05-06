@@ -64,7 +64,7 @@ function buildRouter (config) {
   const endpointsMap = Object.assign({}, defaultEndpoints, config.endpoints)
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.findById(req.params.id)
+    const resource = await config.controller.findById(req.params.id, req.query)
     req.toSend = resource
     return next()
   })
