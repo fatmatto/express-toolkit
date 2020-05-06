@@ -1,3 +1,7 @@
+# 📦 0.5.0 (6 May 2020)
+- [33232](https://github.com/fatmatto/express-toolkit/commit/33232e8b4405589c10c52afe111a493ef1f94f5c)  📦 Release 0.5.0
+- [39086](https://github.com/fatmatto/express-toolkit/commit/39086213eea765b21237cddb2b7a2d264bdea2cf)  Resource hooks (#25)
+- [5bf27](https://github.com/fatmatto/express-toolkit/commit/5bf2712a23c2d6f57b967e04a79d0745958a429e)  📒 Update CHANGELOG
 # 📦 0.4.1 (15 Apr 2020)
 - [1b660](https://github.com/fatmatto/express-toolkit/commit/1b660e06e70f93468292133c8899f9410b6f3c9f)  📦 Release 0.4.1
 - [359b4](https://github.com/fatmatto/express-toolkit/commit/359b4378d4d6cfb24fd5a7496904c19567bf940f)  bugfix: replaceById should correctly handle custom IDs
