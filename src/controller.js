@@ -306,24 +306,8 @@ class Controller {
   }
 
   /**
-   * Registers a Hook function for the given event. Possible values for eventName are
-   * - pre:finalize
-   * - pre:count
-   * - post:count
-   * - pre:find
-   * - post:find
-   * - pre:findById
-   * - post:findById
-   * - pre:create
-   * - post:create
-   * - pre:updateById
-   * - post:updateById
-   * - pre:updateByQuery
-   * - post:updateByQuery
-   * - pre:deleteById
-   * - post:deleteById
-   * - pre:deleteByQuery
-   * - post:deleteByQuery
+   * Registers a Hook function for the given event. Possible values for eventName are listed
+   * here: https://github.com/fatmatto/express-toolkit
    * @param {String} eventName The event that will trigger the hook
    * @param {Function} handler The express middleware to use as hook
    */

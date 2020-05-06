@@ -80,11 +80,10 @@ test('Hooks should work with resources', async t => {
     model: petsModel
   })
 
-  PetsResource.controller.registerHook('pre:*', (req, res, next) => {
+  PetsResource.registerHook('pre:*', (req, res, next) => {
     return res.send({ hooked: true })
   })
-  // This is necessary with resources since the controller changed and the router needs to be rebuilt
-  PetsResource.rebuildRouter()
+
   PetsResource.mount('/pets', app)
 
   const resp = await request(app)
