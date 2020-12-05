@@ -35,9 +35,9 @@
   ],
   "dependencies": {
     "express": "^4.17.1",
-    "json8-patch": "^1.0.1",
-    "mongoose": "^5.7.7",
-    "throwable-http-errors": "^1.0.1"
+    "json8-patch": "^1.0.4",
+    "mongoose": "^5.11.4",
+    "throwable-http-errors": "^2.1.0"
   },
   "devDependencies": {
     "ava": "^3.8.1",
