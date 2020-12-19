@@ -1,3 +1,10 @@
+# 📦 0.5.1 (19 Dec 2020)
+- [f018a](https://github.com/fatmatto/express-toolkit/commit/f018ade73275cd168560bca97c4bdf3583b06bb2)  📦 Release 0.5.1
+- [b568d](https://github.com/fatmatto/express-toolkit/commit/b568dcc904c6386c6146db230c439c98d1a37796)  chore: update dependencies
+- [ebf8a](https://github.com/fatmatto/express-toolkit/commit/ebf8ae87d86dd65234eb2f689ac9ca6a0f930f84)  chore: update dependencies
+- [de84d](https://github.com/fatmatto/express-toolkit/commit/de84d92c2b62337763c6603d6273a22f03fb9dc1)  security: update dependencies
+- [3ddc7](https://github.com/fatmatto/express-toolkit/commit/3ddc7799f92780681953d42e38233442a4173421)  Bump lodash from 4.17.14 to 4.17.19 (#26)
+- [c6830](https://github.com/fatmatto/express-toolkit/commit/c68305084a189787be313e319eb264b40f60bb3c)  📒 Update CHANGELOG
 # 📦 0.5.0 (6 May 2020)
 - [33232](https://github.com/fatmatto/express-toolkit/commit/33232e8b4405589c10c52afe111a493ef1f94f5c)  📦 Release 0.5.0
 - [39086](https://github.com/fatmatto/express-toolkit/commit/39086213eea765b21237cddb2b7a2d264bdea2cf)  Resource hooks (#25)
@@ -24,6 +31,7 @@
 - [677f6](https://github.com/fatmatto/express-toolkit/commit/677f635fea8ba7c67a89b924374c87615c3b51c8)  📦 Release 0.3.1
 - [0a93b](https://github.com/fatmatto/express-toolkit/commit/0a93bafdf2ea3b783934a8cd910a6642297fdfa3)  Update the release script to generate changelog AFTER the tag is pushed
 - [f3c0e](https://github.com/fatmatto/express-toolkit/commit/f3c0e0a42d99018b0a7b40c120e5e89eb997fd8a)  Merge pull request #17 from fatmatto/router-refactor
+- [24a92](https://github.com/fatmatto/express-toolkit/commit/24a923c5e111c5784f4173483a831e8ba3c42957)  Remove node 6 from travis-ci config since we will ot support it, remove deprecated key in travis-ci config.
 - [d845e](https://github.com/fatmatto/express-toolkit/commit/d845e466271be50db7c66a8d6f2eb10f06450a3c)  Update the travis-ci config to test from node 6 to node lts
 - [ab204](https://github.com/fatmatto/express-toolkit/commit/ab2047a2dcd5a363935e0ca3ab22d6430f03228f)  Refactor router and add pre:*, post:* hooks
 - [3df7e](https://github.com/fatmatto/express-toolkit/commit/3df7ea768c2ce4dda194dd3fdcb078a26ebc2a61)  Docs: add changelog
