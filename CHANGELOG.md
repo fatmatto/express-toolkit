@@ -1,3 +1,7 @@
+# 📦 0.6.0 (31 Dec 2020)
+- [d1c58](https://github.com/fatmatto/express-toolkit/commit/d1c589e5c4772f92c77bbf9e8294bf05ad76fa20)  📦 Release 0.6.0
+- [d51e2](https://github.com/fatmatto/express-toolkit/commit/d51e2662c13413c83cead30b352948b697d2a54f)  fix: updateByQuery should update multiple matching documents (#29)
+- [bdf2f](https://github.com/fatmatto/express-toolkit/commit/bdf2f82ddc2a29928bec807c6fe750a36e8ccfb6)  📒 Update CHANGELOG
 # 📦 0.5.1 (19 Dec 2020)
 - [f018a](https://github.com/fatmatto/express-toolkit/commit/f018ade73275cd168560bca97c4bdf3583b06bb2)  📦 Release 0.5.1
 - [b568d](https://github.com/fatmatto/express-toolkit/commit/b568dcc904c6386c6146db230c439c98d1a37796)  chore: update dependencies
