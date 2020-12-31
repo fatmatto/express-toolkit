@@ -47,13 +47,7 @@ test('Reject updateById on non existing resource', async t => {
   })
   t.is(err.name, 'NotFound')
 })
-test('Reject updateOne on non existing resource', async t => {
-  const err = await t.throwsAsync(async () => {
-    await ctrl.updateByQuery({ name: NON_EXISTING_ID })
-  })
-  t.is(err.name, 'NotFound')
-})
-test('Reject updateOne on invalid data', async t => {
+test('Reject updateByQuery on invalid data', async t => {
   const err = await t.throwsAsync(async () => {
     await ctrl.updateByQuery({ name: 'Snowball I' }, { age: ['a', 'b', null] })
   })
@@ -154,8 +148,11 @@ test('Find one resource', async t => {
   t.is(cat.name, 'Snowball I')
 })
 
-test('Update one resource', async t => {
-  const cat = await ctrl.updateByQuery({ name: 'Snowball III' }, { name: 'Snowball III+' })
+test('Update one resource with updateByQuery', async t => {
+  let cat = await ctrl.findOne({ name: 'Snowball III' })
+  const catId = cat._id
+  await ctrl.updateByQuery({ name: 'Snowball III' }, { name: 'Snowball III+' })
+  cat = await ctrl.findOne({ _id: catId })
   t.is(cat.name, 'Snowball III+')
 })
 

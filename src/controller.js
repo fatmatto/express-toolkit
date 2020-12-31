@@ -177,22 +177,20 @@ class Controller {
   * @return {Promise}
   */
   async updateByQuery (query, update) {
-    const instance = await this.Model.findOne(query)
+    const instances = await this.Model.find(query)
 
-    if (instance === null) {
-      throw new Errors.NotFound()
+    for (const instance of instances) {
+      for (var k in update) {
+        instance.set(k, update[k])
+      }
+
+      const validationError = instance.validateSync()
+      if (validationError) {
+        throw new Errors.BadRequest(validationError.message)
+      }
     }
 
-    for (var k in update) {
-      instance.set(k, update[k])
-    }
-
-    const validationError = instance.validateSync()
-    if (validationError) {
-      throw new Errors.BadRequest(validationError.message)
-    }
-
-    return instance.save()
+    return this.Model.updateMany(query, { $set: update })
   }
 
   /**
