@@ -182,18 +182,19 @@ app.listen(1337)
 In the following table, every path showed in the Path column is meant to be appended to the resource base path which simply is `/<resourcename>`. Following the dinosaurs examples, would be `/dinosaurs`
 
 
-| Name | Http verb | Path | Description |
-| ---- | --------- | ---- | ----------  |
-| Create | POST | / | Creates a new resource and returns it. |
-| List | GET | / | Get a paginated and filtered list of resources of the given type |
-| GetById | GET | /{uuid} | Get a resource by id |
-| UpdateById | PUT | /{uuid} | Updates a resource |
-| UpdateByQuery | PUT | / | Updates resources that matches query parameters |
-| PatchById | PATCH | /{uuid} | Updates a resource by id using PATCH semantics |
-| ReplaceById | PUT | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
-| DeleteById | DELETE | /{uuid} | Deletes a resource |
-| DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
-| Count | GET | / | Count resources in collection matching filters in the querysting |
+| Name            | Http verb | Path                              | Description                                                                            |
+| --------------- | --------- | --------------------------------- | -------------------------------------------------------------------------------------- |
+| Create          | POST      | /                                 | Creates a new resource and returns it.                                                 |
+| List            | GET       | /                                 | Get a paginated and filtered list of resources of the given type                       |
+| GetById         | GET       | /{uuid}                           | Get a resource by id                                                                   |
+| UpdateById      | PUT       | /{uuid}                           | Updates a resource                                                                     |
+| UpdateByQuery   | PUT       | /                                 | Updates resources that matches query parameters                                        |
+| PatchById       | PATCH     | /{uuid}                           | Updates a resource by id using PATCH semantics                                         |
+| ReplaceById     | PUT       | /{uuid}/replace                   | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
+| DeleteById      | DELETE    | /{uuid}                           | Deletes a resource                                                                     |
+| DeleteByQuery   | DELETE    | /                                 | Deletes resources matching filters in the querystring                                  |
+| Count           | GET       | /                                 | Count resources in collection matching filters in the querysting                       |
+| RemoveAttribute | DELETE    | /{uuid}/attribute/{attributeName} | Unset a single attribute from the given resource                                       |
 
 ## Disable endpoints
 
@@ -213,7 +214,8 @@ const router = buildRouter({
     deleteByQuery: true,
     count: true,
     patchById: true,
-    replaceById: true
+    replaceById: true,
+    removeAttribute: true
   }
 })
 // Default resource deletion
@@ -299,6 +301,8 @@ Typically, in `pre` hooks you will want to manually edit requests or do some kin
 - post:patchById
 - pre:replaceById
 - post:replaceById
+- pre:removeAttribute
+- post:removeAttribute
 - pre:*
 - post:*
 - pre:finalize
