@@ -40,7 +40,8 @@ const defaultEndpoints = {
   deleteByQuery: true,
   count: true,
   patchById: true,
-  replaceById: true
+  replaceById: true,
+  removeAttribute: true
 }
 
 /**
@@ -125,6 +126,12 @@ function buildRouter (config) {
     return next()
   })
 
+  const removeAttributeMiddleware = asyncMiddleware(async (req, res, next) => {
+    const resource = await config.controller.removeAttribute(req.params.id, req.params.attributeName, req.query)
+    req.toSend = resource
+    return next()
+  })
+
   const endpoints = {
     count: {
       method: 'get',
@@ -175,6 +182,11 @@ function buildRouter (config) {
       method: 'put',
       path: '/:id/replace',
       middleware: replaceByIdMiddleware
+    },
+    removeAttribute: {
+      method: 'delete',
+      path: '/:id/attribute/:attributeName',
+      middleware: removeAttributeMiddleware
     }
 
   }

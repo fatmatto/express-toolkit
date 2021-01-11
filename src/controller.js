@@ -80,7 +80,7 @@ class Controller {
   /**
 * Looks for a single record with the given id
 * @param {String | Number} id The object used to query the database
-* @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
+* @param {Object} query An object of additional query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
 */
   async findById (id, query = {}) {
     query[this.id] = id
@@ -197,7 +197,7 @@ class Controller {
    *
    * @param {String | Number} id The id of the resource to update
    * @param {Object} update The update to apply
-   * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
+   * @param {Object} query An object of additional query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
    */
   async updateById (id, update, query = {}) {
     query[this.id] = id
@@ -223,7 +223,7 @@ class Controller {
  *
  * @param {String | Number} id The id of the resource to update
  * @param {Object} replacement The replacement object
- * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
+ * @param {Object} query An object of additional query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
  */
   async replaceById (id, replacement, query = {}) {
     query[this.id] = id
@@ -256,7 +256,7 @@ class Controller {
   /**
  * Removes a resource by id
  * @param {String} id The resource's id.
- * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
+ * @param {Object} query An object of additional query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
  */
   deleteById (id, query = {}) {
     query[this.id] = id
@@ -275,7 +275,7 @@ class Controller {
  *
  * @param {String | Number} id The id of the resource to update
  * @param {Array} operations Array of JSON patch operations to apply to the document
- * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
+ * @param {Object} query An object of additional query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
  */
   async patchById (id, operations, query = {}) {
     query[this.id] = id
@@ -325,6 +325,30 @@ class Controller {
    */
   getHooks (eventName) {
     return this.__hooks[eventName]
+  }
+
+  /**
+   *
+   * @param {String | Number} id The id of the resource to update
+   * @param {String} attributeName The name of the attribute to unset
+   * @param {Object} query An object of additional query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
+   */
+  async removeAttribute (id, attributeName, query = {}) {
+    query[this.id] = id
+    const instance = await this.Model.findOne(query)
+
+    if (instance === null) {
+      throw new Errors.NotFound()
+    }
+
+    instance.set(attributeName, null)
+
+    const validationError = instance.validateSync()
+    if (validationError) {
+      throw new Errors.BadRequest(validationError.message)
+    }
+
+    return instance.save()
   }
 }
 

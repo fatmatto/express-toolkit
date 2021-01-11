@@ -408,3 +408,47 @@ test('Should refuse to replace a resource with invalid data', async t => {
 
   t.is(err.name, 'BadRequest')
 })
+
+test('removeAttribute() should unset a single document\'s attribute ', async t => {
+  const model = makeModel('RemoveAttributeModel')
+  const c = new Controller({
+    name: 'RemoveAttributeModel',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: model
+  })
+
+  const instance = await c.create({ name: 'Zeebry', age: 2, owner: 'Harry Potter' })
+  t.is(instance.age, 2)
+  await c.removeAttribute(instance._id, 'age')
+  const updatedInstance = await c.findOne(instance._id)
+  t.is(updatedInstance.age, null)
+})
+
+test('removeAttribute() should throw when called on non existing resource ', async t => {
+  const model = makeModel('RemoveAttributeModel2')
+  const c = new Controller({
+    name: 'RemoveAttributeModel2',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: model
+  })
+
+  const err = await t.throwsAsync(c.removeAttribute(NON_EXISTING_ID, 'age'))
+
+  t.is(err.name, 'NotFound')
+})
+
+test('removeAttribute() should throw when unsetting a required attribute ', async t => {
+  const model = makeModel('RemoveAttributeModel3')
+  const c = new Controller({
+    name: 'RemoveAttributeModel',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: model
+  })
+
+  const instance = await c.create({ name: 'Zeebry', age: 2, owner: 'Harry Potter' })
+  const err = await t.throwsAsync(c.removeAttribute(instance._id, 'name'))
+  t.is(err.name, 'BadRequest')
+})

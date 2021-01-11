@@ -206,7 +206,9 @@ test('Should run all hooks', async t => {
     prePatch: sinon.spy(),
     postPatch: sinon.spy(),
     preReplaceById: sinon.spy(),
-    postReplaceById: sinon.spy()
+    postReplaceById: sinon.spy(),
+    preRemoveAttribute: sinon.spy(),
+    postRemoveAttribute: sinon.spy()
   }
 
   ctrl.registerHook('pre:create', (req, res, next) => {
@@ -272,6 +274,16 @@ test('Should run all hooks', async t => {
     next()
   })
 
+  ctrl.registerHook('pre:removeAttribute', (req, res, next) => {
+    spies.preRemoveAttribute()
+    next()
+  })
+
+  ctrl.registerHook('post:removeAttribute', (req, res, next) => {
+    spies.postRemoveAttribute()
+    next()
+  })
+
   const _router = router({
     controller: ctrl
   })
@@ -304,16 +316,21 @@ test('Should run all hooks', async t => {
     .put(`/${doggo._id}`)
     .send({ name: 'Doggo, the usurper' })
 
-  // test create hooks
+  // test patch hooks
   await request(t.context.app)
     .patch(`/${doggo._id}`)
     .send([{ op: 'replace', path: '/name', value: 'Doggo the patched eye' }])
     .set('Accept', 'application/json')
 
-  // test create hooks
+  // test replace hooks
   await request(t.context.app)
     .put(`/${doggo._id}/replace`)
     .send({ name: 'Doggerino the calm' })
+    .set('Accept', 'application/json')
+
+  // test removeAttribute hooks
+  await request(t.context.app)
+    .delete(`/${doggo._id}/attribute/age`)
     .set('Accept', 'application/json')
 
   // Test deleteByQuery
@@ -333,4 +350,6 @@ test('Should run all hooks', async t => {
   t.true(spies.postPatch.called)
   t.true(spies.preReplaceById.called)
   t.true(spies.postReplaceById.called)
+  t.true(spies.preRemoveAttribute.called)
+  t.true(spies.postRemoveAttribute.called)
 })
