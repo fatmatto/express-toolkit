@@ -36,7 +36,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "json8-patch": "^1.0.4",
-    "mongoose": "^5.12.2",
+    "mongoose": "^5.12.3",
     "throwable-http-errors": "^2.1.0"
   },
   "devDependencies": {
