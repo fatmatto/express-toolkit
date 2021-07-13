@@ -179,7 +179,7 @@ function buildRouter (config) {
 
   }
 
-  for (let endpointName in endpoints) {
+  for (const endpointName in endpoints) {
     /**
      * This is for reto-compatibility reasons, some hooks (due to a bug or a bad design decision)
      * did not match the middleware name, for example the pre:update hook is run before the updateByQuery

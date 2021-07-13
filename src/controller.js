@@ -39,6 +39,13 @@ class Controller {
    * @returns
    */
   async __includeRelationships (originalItems, relationshipsToInclude) {
+    const unkownIncludes = relationshipsToInclude.filter(includeName => {
+      return !this.relationships.find(rel => rel.name === includeName)
+    })
+
+    if (unkownIncludes.length > 0) {
+      throw new Errors.BadRequest(`Cannot include ${unkownIncludes} on this resource.`)
+    }
     const relationships = this.relationships.filter(item => {
       return item.alwaysInclude === true || relationshipsToInclude.includes(item.name)
     })
@@ -52,8 +59,14 @@ class Controller {
       items = [originalItems]
     }
     for (const relationship of relationships) {
-      const outerValues = items.map(item => item[relationship.innerField])
-      const relationshipItems = await relationship.model.find({ [relationship.outerField]: { $in: outerValues } }).lean()
+      let outerValues = items.map(item => item[relationship.innerField])
+      // Deduplicate values
+      outerValues = [...new Set(outerValues)]
+
+      const relationshipItems = await relationship.model
+        .find({ [relationship.outerField]: { $in: outerValues } })
+        .lean()
+
       items.forEach(item => {
         item.includes = item.includes || {}
         item.includes[relationship.name] = relationshipItems.filter(rItem => {

@@ -490,4 +490,7 @@ test('Should include relationships in response', async t => {
     return store.includes && store.includes.workers && store.includes.products
   })
   t.is(true, condition)
+
+  const err = await t.throwsAsync(StoreController.find({ include: 'nonExistingInclude' }))
+  t.is(err.name, 'BadRequest')
 })
