@@ -282,7 +282,8 @@ class Controller {
       throw new Errors.BadRequest(validationError.message)
     }
 
-    return instance.save()
+    await instance.save()
+    return instance.toJSON()
   }
 
   /**
@@ -308,7 +309,8 @@ class Controller {
       throw new Errors.BadRequest(validationError.message)
     }
 
-    return instance.save()
+    await instance.save()
+    return instance.toJSON()
   }
 
   /**
@@ -366,7 +368,7 @@ class Controller {
 
     await this.Model.updateOne(query, updatedInstance.toObject())
 
-    return updatedInstance
+    return updatedInstance.toJSON()
   }
 
   /**
