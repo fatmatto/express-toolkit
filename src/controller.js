@@ -101,13 +101,13 @@ class Controller {
     delete query.include
 
     let result = await this.Model
-      .find(query, projection)
+      .find(query, projection.baseResource)
       .sort(sort)
       .skip(skip)
       .limit(limit)
       .lean()
 
-    result = await this.__includeRelationships(result, relationshipsToInclude)
+    result = await this.__includeRelationships(result, relationshipsToInclude, projection)
 
     return result
   }
@@ -126,11 +126,11 @@ class Controller {
     }
     delete query.include
 
-    const instance = await this.Model.findOne(query, projection).lean()
+    const instance = await this.Model.findOne(query, projection.baseResource).lean()
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      const result = await this.__includeRelationships(instance, relationshipsToInclude)
+      const result = await this.__includeRelationships(instance, relationshipsToInclude, projection)
       return result
     }
   }
@@ -151,12 +151,12 @@ class Controller {
     }
     delete query.include
 
-    const instance = await this.Model.findOne(query, projection).lean()
+    const instance = await this.Model.findOne(query, projection.baseResource).lean()
 
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      const result = await this.__includeRelationships(instance, relationshipsToInclude)
+      const result = await this.__includeRelationships(instance, relationshipsToInclude, projection)
       return result
     }
   }

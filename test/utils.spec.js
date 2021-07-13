@@ -14,10 +14,12 @@ test('Should reject invalid json', async t => {
 
 test('Should correctly produce a projection object', t => {
   const query = {
-    fields: 'age,name'
+    fields: 'age,name',
+    'fields:cars': 'brand,model'
   }
   const projection = utils.getProjection(query)
-  t.deepEqual(projection, { age: 1, name: 1 })
+  t.deepEqual(projection.baseResource, { age: 1, name: 1 })
+  t.deepEqual(projection.cars, { brand: 1, model: 1 })
 })
 
 test('Should throw error when fields parameter is not a string', t => {

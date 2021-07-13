@@ -48,19 +48,32 @@ function getSorting (query) {
   return sorting
 }
 
-function getProjection (query) {
-  if (!Object.prototype.hasOwnProperty.call(query, 'fields')) {
-    return null
-  }
-  if (typeof query.fields !== 'string') {
-    throw new Errors.BadRequest('fields parameter should be a string of comma separated field names. Got ' + typeof query.fields + '.')
-  }
+const getFieldsFromString = (str) => {
   const fields = {}
-  const tokens = query.fields.split(',')
+  const tokens = str.split(',')
   tokens.forEach(token => {
     fields[token] = 1
   })
   return fields
+}
+
+function getProjection (query) {
+  const attributes = Object.keys(query).filter(paramName => {
+    return paramName === 'fields' || paramName.split(':')[0] === 'fields'
+  })
+
+  const output = {}
+  attributes.forEach(attributeName => {
+    if (typeof query[attributeName] !== 'string') {
+      throw new Errors.BadRequest(`Projection parameter ${attributeName} must be string`)
+    }
+    if (attributeName === 'fields') {
+      output.baseResource = getFieldsFromString(query[attributeName])
+    } else {
+      output[attributeName.split(':')[1]] = getFieldsFromString(query[attributeName])
+    }
+  })
+  return output
 }
 
 module.exports = {
