@@ -75,10 +75,10 @@ class Controller {
   async find (query) {
     let skip = this.defaultSkipValue
     let limit = this.defaultLimitValue
-    if (query.hasOwnProperty('limit')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'limit')) {
       limit = Number(query.limit)
     }
-    if (query.hasOwnProperty('skip')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'skip')) {
       skip = Number(query.skip)
     }
 
@@ -88,7 +88,7 @@ class Controller {
 
     let relationshipsToInclude = []
 
-    if (query.hasOwnProperty('include')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'include')) {
       relationshipsToInclude = query.include.split(',')
     }
 
@@ -121,7 +121,7 @@ class Controller {
     delete query.fields
 
     let relationshipsToInclude = []
-    if (query.hasOwnProperty('include')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'include')) {
       relationshipsToInclude = query.include.split(',')
     }
     delete query.include
@@ -146,7 +146,7 @@ class Controller {
     delete query.fields
 
     let relationshipsToInclude = []
-    if (query.hasOwnProperty('include')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'include')) {
       relationshipsToInclude = query.include.split(',')
     }
     delete query.include
