@@ -20,6 +20,7 @@ class Controller {
    * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById. Defaults to _id.
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
+   * @param {Object} [relationships] On object where each key is a relationship specification. It can be used to fetch related resources
    */
   constructor (config) {
     this.Model = config.model
@@ -28,6 +29,43 @@ class Controller {
     this.defaultSkipValue = config.defaultSkipValue || DEFAULT_SKIP_VALUE
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
     this.__hooks = {}
+    this.relationships = config.relationships || []
+  }
+
+  /**
+   *
+   * @param {any} originalItems Array of resources or resource
+   * @param {Array<String>} relationshipsToInclude array of name of resources to include
+   * @returns
+   */
+  async __includeRelationships (originalItems, relationshipsToInclude) {
+    const relationships = this.relationships.filter(item => {
+      return item.alwaysInclude === true || relationshipsToInclude.includes(item.name)
+    })
+    if (relationships.length === 0) {
+      return originalItems
+    }
+    let items = []
+    if (Array.isArray(originalItems)) {
+      items = [].concat(originalItems)
+    } else {
+      items = [originalItems]
+    }
+    for (const relationship of relationships) {
+      const outerValues = items.map(item => item[relationship.innerField])
+      const relationshipItems = await relationship.model.find({ [relationship.outerField]: { $in: outerValues } }).lean()
+      items.forEach(item => {
+        item.includes = item.includes || {}
+        item.includes[relationship.name] = relationshipItems.filter(rItem => {
+          return rItem[relationship.outerField] === item[relationship.innerField]
+        })
+      })
+    }
+    if (!Array.isArray(originalItems)) {
+      return items[0]
+    } else {
+      return items
+    }
   }
 
   /**
@@ -48,18 +86,30 @@ class Controller {
 
     const sort = getSorting(query)
 
+    let relationshipsToInclude = []
+
+    if (query.hasOwnProperty('include')) {
+      relationshipsToInclude = query.include.split(',')
+    }
+
     // Deleting modifiers from the query
     delete query.skip
     delete query.limit
     delete query.sortby
     delete query.sortorder
     delete query.fields
+    delete query.include
 
-    return this.Model
+    let result = await this.Model
       .find(query, projection)
       .sort(sort)
       .skip(skip)
       .limit(limit)
+      .lean()
+
+    result = await this.__includeRelationships(result, relationshipsToInclude)
+
+    return result
   }
 
   /**
@@ -69,11 +119,19 @@ class Controller {
   async findOne (query) {
     const projection = getProjection(query)
     delete query.fields
-    const instance = await this.Model.findOne(query, projection)
+
+    let relationshipsToInclude = []
+    if (query.hasOwnProperty('include')) {
+      relationshipsToInclude = query.include.split(',')
+    }
+    delete query.include
+
+    const instance = await this.Model.findOne(query, projection).lean()
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      return instance
+      const result = await this.__includeRelationships(instance, relationshipsToInclude)
+      return result
     }
   }
 
@@ -86,12 +144,20 @@ class Controller {
     query[this.id] = id
     const projection = getProjection(query)
     delete query.fields
-    const instance = await this.Model.findOne(query, projection)
+
+    let relationshipsToInclude = []
+    if (query.hasOwnProperty('include')) {
+      relationshipsToInclude = query.include.split(',')
+    }
+    delete query.include
+
+    const instance = await this.Model.findOne(query, projection).lean()
 
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      return instance
+      const result = await this.__includeRelationships(instance, relationshipsToInclude)
+      return result
     }
   }
 
@@ -180,7 +246,7 @@ class Controller {
     const instances = await this.Model.find(query)
 
     for (const instance of instances) {
-      for (var k in update) {
+      for (const k in update) {
         instance.set(k, update[k])
       }
 
@@ -207,7 +273,7 @@ class Controller {
       throw new Errors.NotFound()
     }
 
-    for (var k in update) {
+    for (const k in update) {
       instance.set(k, update[k])
     }
 
@@ -233,7 +299,7 @@ class Controller {
       throw new Errors.NotFound()
     }
     // Primary identifiers cannot be replaced
-    replacement['_id'] = instance._id
+    replacement._id = instance._id
     replacement[this.id] = instance[this.id]
     instance.overwrite(replacement)
 

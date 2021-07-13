@@ -1,4 +1,5 @@
 const { CatModel, makeModel, makeModelWithCustomId } = require('./helpers/mockmodel.helper')
+const mongoose = require('mongoose')
 const Controller = require('../src/controller')
 const test = require('ava')
 const mongooseSetup = require('./helpers/mongoose.helper')
@@ -407,4 +408,86 @@ test('Should refuse to replace a resource with invalid data', async t => {
   const err = await t.throwsAsync(c.replaceById(instance._id, badReplacement))
 
   t.is(err.name, 'BadRequest')
+})
+
+test('Should include relationships in response', async t => {
+  const StoreSchema = new mongoose.Schema({
+    uuid: { type: String },
+    name: { type: String }
+  })
+  const StoreModel = mongoose.model('store', StoreSchema, 'store')
+  const ProductSchema = new mongoose.Schema({
+    uuid: { type: String },
+    name: { type: String },
+    storeId: { type: String }
+  })
+  const ProductModel = mongoose.model('product', ProductSchema, 'product')
+
+  const WorkerSchema = new mongoose.Schema({
+    uuid: { type: String },
+    name: { type: String },
+    storeId: { type: String }
+  })
+  const WorkerModel = mongoose.model('worker', WorkerSchema, 'worker')
+
+  const StoreController = new Controller({
+    id: 'uuid',
+    name: 'stores',
+    model: StoreModel,
+    relationships: [
+      {
+        name: 'products',
+        innerField: 'uuid',
+        outerField: 'storeId',
+        model: ProductModel,
+        alwaysInclude: true
+      },
+      {
+        name: 'workers',
+        innerField: 'uuid',
+        outerField: 'storeId',
+        model: WorkerModel,
+        alwaysInclude: false
+      }
+    ]
+  })
+
+  const store1 = new StoreModel({ name: 'supermarket1', uuid: 'supermarket1' })
+  const store2 = new StoreModel({ name: 'supermarket2', uuid: 'supermarket2' })
+  const product11 = new ProductModel({ name: 'product11', uuid: 'product11', storeId: 'supermarket1' })
+  const product12 = new ProductModel({ name: 'product12', uuid: 'product12', storeId: 'supermarket1' })
+
+  const product21 = new ProductModel({ name: 'product21', uuid: 'product21', storeId: 'supermarket2' })
+  const product22 = new ProductModel({ name: 'product22', uuid: 'product22', storeId: 'supermarket2' })
+
+  await Promise.all([
+    store1.save(),
+    store2.save(),
+    product11.save(),
+    product12.save(),
+    product21.save(),
+    product22.save()
+  ])
+
+  const store1WithProducts = await StoreController.findOne({ uuid: 'supermarket1' })
+  t.is(true, store1WithProducts !== null)
+  t.is(true, Object.prototype.hasOwnProperty.call(store1WithProducts, 'includes'))
+  t.is(true, Object.prototype.hasOwnProperty.call(store1WithProducts.includes, 'products'))
+  t.is(false, Object.prototype.hasOwnProperty.call(store1WithProducts.includes, 'workers'))
+
+  const store1WithProductsAndWorkers = await StoreController.findOne({ uuid: 'supermarket1', include: 'workers' })
+  t.is(true, Object.prototype.hasOwnProperty.call(store1WithProductsAndWorkers, 'includes'))
+  t.is(true, Object.prototype.hasOwnProperty.call(store1WithProductsAndWorkers.includes, 'products'))
+  t.is(true, Object.prototype.hasOwnProperty.call(store1WithProductsAndWorkers.includes, 'workers'))
+
+  const store2WithProductsAndWorkers = await StoreController.findById('supermarket2', { include: 'workers' })
+  t.is(true, Object.prototype.hasOwnProperty.call(store2WithProductsAndWorkers, 'includes'))
+  t.is(true, Object.prototype.hasOwnProperty.call(store2WithProductsAndWorkers.includes, 'products'))
+  t.is(true, Object.prototype.hasOwnProperty.call(store2WithProductsAndWorkers.includes, 'workers'))
+
+  const storesWithProductsAndWorkers = await StoreController.find({ include: 'workers' })
+  const condition = storesWithProductsAndWorkers.every(store => {
+    return store.includes && store.includes.workers && store.includes.products
+  })
+  t.is(true, condition)
 })
