@@ -67,6 +67,8 @@ class Controller {
         .find({ [relationship.outerField]: { $in: outerValues } })
         .lean()
 
+      // TODO: customizzare la destinazione, includes o speciale?
+      // TODO: oneTo Many -> find o oneToOne -> findOne
       items.forEach(item => {
         item.includes = item.includes || {}
         item.includes[relationship.name] = relationshipItems.filter(rItem => {

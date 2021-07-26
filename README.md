@@ -21,6 +21,7 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Sorting](#sorting)
   - [Projection](#projection)
   - [Custom primary key](#custom-primary-key)
+  - [Included resources](#included-resources)
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
     - [Examples](#examples)
@@ -182,18 +183,18 @@ app.listen(1337)
 In the following table, every path showed in the Path column is meant to be appended to the resource base path which simply is `/<resourcename>`. Following the dinosaurs examples, would be `/dinosaurs`
 
 
-| Name | Http verb | Path | Description |
-| ---- | --------- | ---- | ----------  |
-| Create | POST | / | Creates a new resource and returns it. |
-| List | GET | / | Get a paginated and filtered list of resources of the given type |
-| GetById | GET | /{uuid} | Get a resource by id |
-| UpdateById | PUT | /{uuid} | Updates a resource |
-| UpdateByQuery | PUT | / | Updates resources that matches query parameters |
-| PatchById | PATCH | /{uuid} | Updates a resource by id using PATCH semantics |
-| ReplaceById | PUT | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
-| DeleteById | DELETE | /{uuid} | Deletes a resource |
-| DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
-| Count | GET | / | Count resources in collection matching filters in the querysting |
+| Name          | Http verb | Path            | Description                                                                            |
+| ------------- | --------- | --------------- | -------------------------------------------------------------------------------------- |
+| Create        | POST      | /               | Creates a new resource and returns it.                                                 |
+| List          | GET       | /               | Get a paginated and filtered list of resources of the given type                       |
+| GetById       | GET       | /{uuid}         | Get a resource by id                                                                   |
+| UpdateById    | PUT       | /{uuid}         | Updates a resource                                                                     |
+| UpdateByQuery | PUT       | /               | Updates resources that matches query parameters                                        |
+| PatchById     | PATCH     | /{uuid}         | Updates a resource by id using PATCH semantics                                         |
+| ReplaceById   | PUT       | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
+| DeleteById    | DELETE    | /{uuid}         | Deletes a resource                                                                     |
+| DeleteByQuery | DELETE    | /               | Deletes resources matching filters in the querystring                                  |
+| Count         | GET       | /               | Count resources in collection matching filters in the querysting                       |
 
 ## Disable endpoints
 
@@ -268,7 +269,71 @@ const myController = new Controller({
 })
 ```
 
+## Included resources
 
+In some cases it might be useful to automatically include related resources in a single request. For example you might want to include Author information in each of the Articles returned by your API.
+
+For these cases we introduce the concept of relationships:
+
+```javascript
+
+
+// Supposing we already created the relevant mongoose models
+const ArticleController = new Controller({
+  model: ArticleModel,
+  name: 'articles',
+  id: 'uuid',
+  relationships: [
+    {
+      name: 'authors',
+      model: AuthorModel,
+      innerField: 'authorId',
+      outerField: 'uuid',
+      alwaysInclude: true
+    },
+    {
+      model: CommentModel,
+      name: 'comments',
+      innerField: 'uuid',
+      outerField: 'articleId',
+      alwaysInclude: false // false by default
+    }
+  ]
+})
+
+```
+
+
+In the example above, we are telling the library that Articles have relationships with comments and authors. When querying for articles (with find, findOne and findById methods, mapped to GET endpoints) we can request resource inclusion with the `include` parameter. With this example we can ask for related comments and authors, but authors will always be included:
+
+```http
+http -XGET http://localhost:3000/articles?include=comments
+
+{
+  "status":true,
+  "data":[
+    {
+      "uuid":"a123",
+      "name":"my article",
+      "authorId":"a123",
+      "includes":{
+        "authors":[
+          {
+            "uuid":"author123",
+            "name":"John Doe"
+          }
+        ],
+        "comments":[
+          {
+            "uuid":"c123",
+            "text":"Hello great blog post!"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
 
 
 ## Hooks
