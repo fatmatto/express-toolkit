@@ -1,5 +1,19 @@
+# 📦 0.7.0 (27 Jul 2021)
+- [11940](https://github.com/fatmatto/express-toolkit/commit/1194068d0b079d638a4fb7d7328f29ea85f066e2)  📦 Release 0.7.0
+- [ba77c](https://github.com/fatmatto/express-toolkit/commit/ba77ca82981334d42d37b9171e9f602bde6248ff)  doc: negative projection
+- [bc133](https://github.com/fatmatto/express-toolkit/commit/bc133267c092b1cf4319037ee2bac96e44ed32bb)  feat: support negative projection
+- [9f75e](https://github.com/fatmatto/express-toolkit/commit/9f75e8903fe24fcc0ba8de213d9af0839588532b)  chore: update dependencies
+- [6292e](https://github.com/fatmatto/express-toolkit/commit/6292ed61b04fd59d463fb563b36e0137d52c64d9)  Bump normalize-url from 4.5.0 to 4.5.1 (#37)
+- [1ea19](https://github.com/fatmatto/express-toolkit/commit/1ea1932a22aed8cc38e8efad6d3e7dd267d8acbb)  Bump glob-parent from 5.1.1 to 5.1.2 (#36)
+- [68135](https://github.com/fatmatto/express-toolkit/commit/68135a5fdffdb96f0fabac05e09fd61f57a4c5f5)  Bump bson from 1.1.1 to 1.1.6 (#34)
+- [8a1c2](https://github.com/fatmatto/express-toolkit/commit/8a1c2665dc466f185857d35649d4ce6160e4572e)  Bump hosted-git-info from 2.7.1 to 2.8.9 (#35)
+- [ec3ba](https://github.com/fatmatto/express-toolkit/commit/ec3ba3a603fd4a5ebb660788f3fe74a8919f8d09)  fix: package.json & package-lock.json to reduce vulnerabilities (#32)
+- [3f461](https://github.com/fatmatto/express-toolkit/commit/3f461771eecc6efa48b7e29ad4f96c8a3cc1ded4)  Bump y18n from 4.0.0 to 4.0.1 (#31)
+- [73e4e](https://github.com/fatmatto/express-toolkit/commit/73e4e18d18c6c6d05baf54319f61904e1ad4e066)  fix: package.json & package-lock.json to reduce vulnerabilities (#30)
+- [1ed9b](https://github.com/fatmatto/express-toolkit/commit/1ed9ba4d8c699898a70c719f3b42626ec252c96d)  📒 Update CHANGELOG
 # 📦 0.6.0 (31 Dec 2020)
 - [d1c58](https://github.com/fatmatto/express-toolkit/commit/d1c589e5c4772f92c77bbf9e8294bf05ad76fa20)  📦 Release 0.6.0
+- [1f478](https://github.com/fatmatto/express-toolkit/commit/1f47842693f8106bcb8c0be324eee75ecfc530bd)  doc: update readme updateByQuery
 - [d51e2](https://github.com/fatmatto/express-toolkit/commit/d51e2662c13413c83cead30b352948b697d2a54f)  fix: updateByQuery should update multiple matching documents (#29)
 - [bdf2f](https://github.com/fatmatto/express-toolkit/commit/bdf2f82ddc2a29928bec807c6fe750a36e8ccfb6)  📒 Update CHANGELOG
 # 📦 0.5.1 (19 Dec 2020)
