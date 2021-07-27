@@ -182,18 +182,18 @@ app.listen(1337)
 In the following table, every path showed in the Path column is meant to be appended to the resource base path which simply is `/<resourcename>`. Following the dinosaurs examples, would be `/dinosaurs`
 
 
-| Name | Http verb | Path | Description |
-| ---- | --------- | ---- | ----------  |
-| Create | POST | / | Creates a new resource and returns it. |
-| List | GET | / | Get a paginated and filtered list of resources of the given type |
-| GetById | GET | /{uuid} | Get a resource by id |
-| UpdateById | PUT | /{uuid} | Updates a resource |
-| UpdateByQuery | PUT | / | Updates resources that matches query parameters |
-| PatchById | PATCH | /{uuid} | Updates a resource by id using PATCH semantics |
-| ReplaceById | PUT | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
-| DeleteById | DELETE | /{uuid} | Deletes a resource |
-| DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
-| Count | GET | / | Count resources in collection matching filters in the querysting |
+| Name          | Http verb | Path            | Description                                                                            |
+| ------------- | --------- | --------------- | -------------------------------------------------------------------------------------- |
+| Create        | POST      | /               | Creates a new resource and returns it.                                                 |
+| List          | GET       | /               | Get a paginated and filtered list of resources of the given type                       |
+| GetById       | GET       | /{uuid}         | Get a resource by id                                                                   |
+| UpdateById    | PUT       | /{uuid}         | Updates a resource                                                                     |
+| UpdateByQuery | PUT       | /               | Updates resources that matches query parameters                                        |
+| PatchById     | PATCH     | /{uuid}         | Updates a resource by id using PATCH semantics                                         |
+| ReplaceById   | PUT       | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
+| DeleteById    | DELETE    | /{uuid}         | Deletes a resource                                                                     |
+| DeleteByQuery | DELETE    | /               | Deletes resources matching filters in the querystring                                  |
+| Count         | GET       | /               | Count resources in collection matching filters in the querysting                       |
 
 ## Disable endpoints
 
@@ -252,6 +252,12 @@ Or just names
 
 ```http
 GET /dinosaurs?fields=name
+```
+
+Or every field but the age and the name
+
+```http
+GET /dinosaurs?fields=-age,-name
 ```
 
 If you don't specify a `fields` parameter, every attribute will be returned.
