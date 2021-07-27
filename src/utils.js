@@ -58,7 +58,11 @@ function getProjection (query) {
   const fields = {}
   const tokens = query.fields.split(',')
   tokens.forEach(token => {
-    fields[token] = 1
+    if (token[0] === '-') {
+      fields[token.slice(1)] = 0
+    } else {
+      fields[token] = 1
+    }
   })
   return fields
 }
