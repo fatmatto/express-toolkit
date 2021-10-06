@@ -1,3 +1,7 @@
+# 📦 0.7.1 (6 Oct 2021)
+- [b2e08](https://github.com/fatmatto/express-toolkit/commit/b2e08d45e9b60ec20cb03afbae90a027c0df0de4)  📦 Release 0.7.1
+- [c3597](https://github.com/fatmatto/express-toolkit/commit/c35975b3d9e5474d9ae17a6ce674128d55351e3d)  chore: update dependencies
+- [c455f](https://github.com/fatmatto/express-toolkit/commit/c455f4ad10ad0e4b011e3d87b8011f3adf304a60)  📒 Update CHANGELOG
 # 📦 0.7.0 (27 Jul 2021)
 - [11940](https://github.com/fatmatto/express-toolkit/commit/1194068d0b079d638a4fb7d7328f29ea85f066e2)  📦 Release 0.7.0
 - [ba77c](https://github.com/fatmatto/express-toolkit/commit/ba77ca82981334d42d37b9171e9f602bde6248ff)  doc: negative projection
