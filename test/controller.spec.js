@@ -228,7 +228,7 @@ test('Should handle the fields parameter', async t => {
 
   const result = await c.findOne({ name: 'Fiona', fields: 'age' })
 
-  t.is(!result.hasOwnProperty('name'), true)
+  t.is(!Object.prototype.hasOwnProperty.call(result, 'name'), true)
   t.is(result.age, 7)
 })
 
