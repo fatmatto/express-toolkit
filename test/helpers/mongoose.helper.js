@@ -12,9 +12,6 @@ function setupMongoose () {
     .then((mongoUri) => {
       const mongooseOpts = {
         // options for mongoose 4.11.3 and above
-        autoReconnect: true,
-        reconnectTries: Number.MAX_VALUE,
-        reconnectInterval: 1000,
         useNewUrlParser: true,
         useUnifiedTopology: true
       }

@@ -1,6 +1,6 @@
 const Controller = require('../src/controller')
 const router = require('../src/router')
-const { CatModel, makeModel } = require('./helpers/mockmodel.helper')
+const { CatModel, makeModel, makeModelWithCustomId } = require('./helpers/mockmodel.helper')
 const sinon = require('sinon')
 const test = require('ava')
 const request = require('supertest')
@@ -333,4 +333,57 @@ test('Should run all hooks', async t => {
   t.true(spies.postPatch.called)
   t.true(spies.preReplaceById.called)
   t.true(spies.postReplaceById.called)
+})
+
+test('Should be able to use a customized id route param', async t => {
+  const app = makeApp()
+  const UserModel = makeModelWithCustomId('users')
+  const SettingModel = makeModelWithCustomId('settings')
+  const userController = new Controller({
+    name: 'users',
+    id: 'uuid',
+    model: UserModel
+  })
+  const userSettingsController = new Controller({
+    name: 'settings',
+    id: 'uuid',
+    model: SettingModel
+  })
+
+  const user = new UserModel({ name: 'MARIO', age: 32, uuid: 'user123' })
+  const setting = new SettingModel({ name: 'CONFIG_GENERALI', owner: 'user123', uuid: 'setting123' })
+
+  await user.save()
+  await setting.save()
+
+  userSettingsController.registerHook('pre:findById', (req, res, next) => {
+    return next()
+  })
+
+  userSettingsController.registerHook('post:findById', (req, res, next) => {
+    req.toSend = { params: req.params }
+    return next()
+  })
+
+  const settingsRouter = router({
+    controller: userSettingsController,
+    id: 'settingId', // We use a custom name for the path param
+    options: { mergeParams: true } // We have to use mergeParams in order to obtain params from all routers
+  })
+
+  const userRouter = router({
+    controller: userController
+  })
+
+  userRouter.use('/:id/settings', settingsRouter)
+
+  app.use('/users', userRouter)
+
+  const response = await request(app)
+    .get('/users/user123/settings/setting123')
+
+  const result = response.body
+
+  t.is(result.data.params.id, 'user123')
+  t.is(result.data.params.settingId, 'setting123')
 })

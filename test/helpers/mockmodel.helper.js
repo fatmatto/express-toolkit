@@ -56,4 +56,5 @@ const makeModelWithCustomId = (name) => {
 
   return model
 }
+
 module.exports = { CatModel, CatSchema, makeModel, makeModelWithCustomId }

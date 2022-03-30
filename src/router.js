@@ -48,10 +48,12 @@ const defaultEndpoints = {
  * @param {Object} config
  * @param {Object} config.controller
  * @param {Object} [config.endpoints] Map<String,Boolean>
+ * @param {String} [config.id] The named route parameter to use as id. Defaults to "id"
  * @param {Object} [config.options] Express router options. As described in https://expressjs.com/en/api.html#express.router
  */
 function buildRouter (config) {
   config.options = config.options || {}
+  config.id = config.id || 'id'
   const router = express.Router(config.options)
   if (!(config.controller instanceof Controller)) {
     throw new Error('config.controller must be an instance of Controller')
@@ -64,7 +66,7 @@ function buildRouter (config) {
   const endpointsMap = Object.assign({}, defaultEndpoints, config.endpoints)
 
   const findByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.findById(req.params.id, req.query)
+    const resource = await config.controller.findById(req.params[config.id], req.query)
     req.toSend = resource
     return next()
   })
@@ -76,7 +78,7 @@ function buildRouter (config) {
   })
 
   const updateByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.updateById(req.params.id, req.body, req.query)
+    const resource = await config.controller.updateById(req.params[config.id], req.body, req.query)
     req.toSend = resource
     return next()
   })
@@ -88,7 +90,7 @@ function buildRouter (config) {
   })
 
   const deleteByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    await config.controller.deleteById(req.params.id)
+    await config.controller.deleteById(req.params[config.id])
     req.toSend = null
     return next()
   })
@@ -114,13 +116,13 @@ function buildRouter (config) {
   })
 
   const patchByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.patchById(req.params.id, req.body)
+    const resource = await config.controller.patchById(req.params[config.id], req.body)
     req.toSend = resource
     return next()
   })
 
   const replaceByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.replaceById(req.params.id, req.body)
+    const resource = await config.controller.replaceById(req.params[config.id], req.body)
     req.toSend = resource
     return next()
   })
@@ -138,7 +140,7 @@ function buildRouter (config) {
     },
     findById: {
       method: 'get',
-      path: '/:id',
+      path: `/:${config.id}`,
       middleware: findByIdMiddleware
     },
     create: {
@@ -148,7 +150,7 @@ function buildRouter (config) {
     },
     updateById: {
       method: 'put',
-      path: '/:id',
+      path: `/:${config.id}`,
       middleware: updateByIdMiddleware
     },
     updateByQuery: {
@@ -158,7 +160,7 @@ function buildRouter (config) {
     },
     deleteById: {
       method: 'delete',
-      path: '/:id',
+      path: `/:${config.id}`,
       middleware: deleteByIdMiddleware
     },
     deleteByQuery: {
@@ -168,12 +170,12 @@ function buildRouter (config) {
     },
     patchById: {
       method: 'patch',
-      path: '/:id',
+      path: `/:${config.id}`,
       middleware: patchByIdMiddleware
     },
     replaceById: {
       method: 'put',
-      path: '/:id/replace',
+      path: `/:${config.id}/replace`,
       middleware: replaceByIdMiddleware
     }
 
