@@ -289,13 +289,13 @@ test('Should run all hooks', async t => {
 
   // test create hooks
   await request(t.context.app)
-    .post(`/`)
+    .post('/')
     .send({ name: 'Doggo, the super dog' })
     .set('Accept', 'application/json')
 
   // test updateByQuery Hooks
   await request(t.context.app)
-    .put(`/`)
+    .put('/')
     .query({ name: doggo.name })
     .send({ name: 'Doggo, the usurper' })
 
