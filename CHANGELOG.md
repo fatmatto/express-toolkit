@@ -1,3 +1,12 @@
+# 📦 0.8.0 (30 Mar 2022)
+- [81d53](https://github.com/fatmatto/express-toolkit/commit/81d5359c23151c732b59e441fc08d8a265a086d4)  📦 Release 0.8.0
+- [6b443](https://github.com/fatmatto/express-toolkit/commit/6b4438428aed6cb405db92e8afb62090a4cab16a)  chore: update dependencies and fix lint
+- [da416](https://github.com/fatmatto/express-toolkit/commit/da416e9bab135a36b14d86f346ae803c543da315)  chore: update dependencies
+- [723f2](https://github.com/fatmatto/express-toolkit/commit/723f20423d4cf9be89e77aa08d6030d8b7e5d9ad)  feat: allow to customize the named route param id
+- [a3fe3](https://github.com/fatmatto/express-toolkit/commit/a3fe3080855ca684cb25727cf0407a16c71c2cb2)  Bump trim-off-newlines from 1.0.1 to 1.0.3 (#40)
+- [0db70](https://github.com/fatmatto/express-toolkit/commit/0db7095ec715821fcbfcb33b4c4723731c7c0776)  chore: update dependencies
+- [2826e](https://github.com/fatmatto/express-toolkit/commit/2826e0ed6096c58fc5875d5721d1d75079721d23)  Bump ajv from 6.10.0 to 6.12.6 (#39)
+- [7d7c9](https://github.com/fatmatto/express-toolkit/commit/7d7c947159824cb0c3edf8d5bf63add1a0e233a4)  📒 Update CHANGELOG
 # 📦 0.7.1 (6 Oct 2021)
 - [b2e08](https://github.com/fatmatto/express-toolkit/commit/b2e08d45e9b60ec20cb03afbae90a027c0df0de4)  📦 Release 0.7.1
 - [c3597](https://github.com/fatmatto/express-toolkit/commit/c35975b3d9e5474d9ae17a6ce674128d55351e3d)  chore: update dependencies
