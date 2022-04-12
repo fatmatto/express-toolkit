@@ -1,3 +1,8 @@
+# 📦 0.8.1 (12 Apr 2022)
+- [58254](https://github.com/fatmatto/express-toolkit/commit/582545971d0c116fbc20635ef3f0f4d3dfda85c5)  📦 Release 0.8.1
+- [b424c](https://github.com/fatmatto/express-toolkit/commit/b424c774b24fa548c296d12c7731be7ccfa0d05d)  fix: add missing dev dependency
+- [2404e](https://github.com/fatmatto/express-toolkit/commit/2404e267a64966f72d1bdb6f35f85dbf647f5de2)  feat: add useUpdateOne flag to controller
+- [72260](https://github.com/fatmatto/express-toolkit/commit/72260f50214a4b12d1ac42713396dd3b1977590d)  📒 Update CHANGELOG
 # 📦 0.8.0 (30 Mar 2022)
 - [81d53](https://github.com/fatmatto/express-toolkit/commit/81d5359c23151c732b59e441fc08d8a265a086d4)  📦 Release 0.8.0
 - [6b443](https://github.com/fatmatto/express-toolkit/commit/6b4438428aed6cb405db92e8afb62090a4cab16a)  chore: update dependencies and fix lint
