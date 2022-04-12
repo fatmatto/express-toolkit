@@ -3,6 +3,7 @@ const Controller = require('../src/controller')
 const test = require('ava')
 const mongooseSetup = require('./helpers/mongoose.helper')
 const Errors = require('throwable-http-errors')
+const { v4 } = require('uuid')
 const ctrl = new Controller({
   name: 'cats',
   defaultLimitValue: 20,
@@ -160,6 +161,20 @@ test('Update by id', async t => {
   const cat = await ctrl.findOne({ name: 'Snowball V' })
   const updatedCat = await ctrl.updateById(cat._id, { name: 'Snowball V+' })
   t.is(updatedCat.name, 'Snowball V+')
+})
+test('Update by id with useUpdateOne flag set to true', async t => {
+  const ctrl = new Controller({
+    name: 'cats',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: CatModel,
+    useUpdateOne: true
+  })
+  const catData = { name: v4() }
+  const updatedName = v4()
+  const cat = await ctrl.create(catData)
+  const updatedCat = await ctrl.updateById(cat._id, { name: updatedName })
+  t.is(updatedCat.name, updatedName)
 })
 test('Delete a resource by id', async t => {
   const cat = await ctrl.create({ name: 'Snowball Joe' })

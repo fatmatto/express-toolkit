@@ -20,11 +20,13 @@ class Controller {
    * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById. Defaults to _id.
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
+   * @param {Number} [config.useUpdateOne] If set to true, updateById method will use mongoose's Model.updateOne() instead of Document.save()
    */
   constructor (config) {
     this.Model = config.model
     this.id = config.id || '_id'
     this.name = config.name
+    this.useUpdateOne = Boolean(config.useUpdateOne) || false
     this.defaultSkipValue = config.defaultSkipValue || DEFAULT_SKIP_VALUE
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
     this.__hooks = {}
@@ -37,10 +39,10 @@ class Controller {
   async find (query) {
     let skip = this.defaultSkipValue
     let limit = this.defaultLimitValue
-    if (query.hasOwnProperty('limit')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'limit')) {
       limit = Number(query.limit)
     }
-    if (query.hasOwnProperty('skip')) {
+    if (Object.prototype.hasOwnProperty.call(query, 'skip')) {
       skip = Number(query.skip)
     }
 
@@ -180,7 +182,7 @@ class Controller {
     const instances = await this.Model.find(query)
 
     for (const instance of instances) {
-      for (var k in update) {
+      for (const k in update) {
         instance.set(k, update[k])
       }
 
@@ -207,7 +209,7 @@ class Controller {
       throw new Errors.NotFound()
     }
 
-    for (var k in update) {
+    for (const k in update) {
       instance.set(k, update[k])
     }
 
@@ -216,7 +218,13 @@ class Controller {
       throw new Errors.BadRequest(validationError.message)
     }
 
-    return instance.save()
+    if (this.useUpdateOne) {
+      await this.Model.updateOne({ [this.id]: id }, update)
+
+      return instance.toJSON()
+    } else {
+      return instance.save()
+    }
   }
 
   /**
@@ -233,7 +241,7 @@ class Controller {
       throw new Errors.NotFound()
     }
     // Primary identifiers cannot be replaced
-    replacement['_id'] = instance._id
+    replacement._id = instance._id
     replacement[this.id] = instance[this.id]
     instance.overwrite(replacement)
 
