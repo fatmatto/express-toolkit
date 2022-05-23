@@ -19,6 +19,7 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Default endpoints](#default-endpoints)
   - [Disable endpoints](#disable-endpoints)
   - [Sorting](#sorting)
+  - [Pagination](#pagination) 
   - [Projection](#projection)
   - [Custom primary key](#custom-primary-key)
   - [Hooks](#hooks)
@@ -42,6 +43,18 @@ const PetsResource = new Resource({
   name: 'pets',
   id: 'uuid',
   model: mongoose.model('pets', schema, 'pets')
+})
+
+
+PetsResource.registerHook('pre:find', (req, res, next) => {
+  console.log('Looking for Pets')
+  next()
+})
+
+// Remember to extend the router AFTER adding hooks,
+// otherwise the router will be overwritten without this route
+PetsResource.router.get('/actions/eat',(req,res) => {
+  return res.send('Om nom nom')
 })
 
 // Now the Express related stuff
@@ -95,7 +108,7 @@ ctrl.registerHook('post:create',(req,res,next) => {
 
 
 // Let's add a custom route to the router
-const router = PetsResource.model
+const router = PetsResource.router
 
 router.get('/hello/world',(req,res,next) => {
   res.send("Hello")
@@ -149,7 +162,8 @@ const { buildRouter } = require('express-toolkit')
 const DinosaurController = require('./dinosaur.controller.js')
 
 module.exports = buildRouter({
-  controller: DinosaurController
+  controller: DinosaurController,
+  options: {} // See expressJS router options
 })
 ```
 
@@ -169,17 +183,18 @@ app.listen(1337)
 In the following table, every path showed in the Path column is meant to be appended to the resource base path which simply is `/<resourcename>`. Following the dinosaurs examples, would be `/dinosaurs`
 
 
-| Name | Http verb | Path | Description |
-| ---- | --------- | ---- | ----------  |
-| Create | POST | / | Creates a new resource and returns it. |
-| List | GET | / | Get a paginated and filtered list of resources of the given type |
-| GetById | GET | /{uuid} | Get a resource by id |
-| UpdateById | PUT | /{uuid} | Updates a resource |
-| UpdateByQuery | PUT | / | Updates a resource that matches query parameters |
-| PatchById | PATCH | /{uuid} | Updates a resource by id using PATCH semantics |
-| DeleteById | DELETE | /{uuid} | Deletes a resource |
-| DeleteByQuery | DELETE | / | Deletes resources matching filters in the querystring |
-| Count | GET | / | Count resources in collection matching filters in the querysting |
+| Name          | Http verb | Path            | Description                                                                            |
+| ------------- | --------- | --------------- | -------------------------------------------------------------------------------------- |
+| Create        | POST      | /               | Creates a new resource and returns it.                                                 |
+| List          | GET       | /               | Get a paginated and filtered list of resources of the given type                       |
+| GetById       | GET       | /{uuid}         | Get a resource by id                                                                   |
+| UpdateById    | PUT       | /{uuid}         | Updates a resource                                                                     |
+| UpdateByQuery | PUT       | /               | Updates resources that matches query parameters                                        |
+| PatchById     | PATCH     | /{uuid}         | Updates a resource by id using PATCH semantics                                         |
+| ReplaceById   | PUT       | /{uuid}/replace | Replaces a resource by id. Primary id field (and _id if not the same) are not replaced |
+| DeleteById    | DELETE    | /{uuid}         | Deletes a resource                                                                     |
+| DeleteByQuery | DELETE    | /               | Deletes resources matching filters in the querystring                                  |
+| Count         | GET       | /               | Count resources in collection matching filters in the querysting                       |
 
 ## Disable endpoints
 
@@ -198,7 +213,8 @@ const router = buildRouter({
     deleteById: true,
     deleteByQuery: true,
     count: true,
-    patchById: true
+    patchById: true,
+    replaceById: true
   }
 })
 // Default resource deletion
@@ -222,6 +238,12 @@ For example, the following request would sort dinosaurs by age, oldest to younge
 ```http
 GET /dinosaurs?sortby=age&sortorder=DESC
 ```
+## Pagination
+GET endpoints support result pagination through `skip` and `limit` parameters:
+- `skip <Number>` tells the endpoint how many results to skip
+- `limit <Number` tells the endpoint how many results to include in the response
+
+To implement a pagination scheme, you can leverage these two parameters in the following way: Suppose you want to return `R` results per page and you want to return page number `P`, you just need to set limit to `R` and skip to `(P-1)*R`
 
 ## Projection
 
@@ -237,6 +259,12 @@ Or just names
 
 ```http
 GET /dinosaurs?fields=name
+```
+
+Or every field but the age and the name
+
+```http
+GET /dinosaurs?fields=-age,-name
 ```
 
 If you don't specify a `fields` parameter, every attribute will be returned.
@@ -282,6 +310,8 @@ Typically, in `pre` hooks you will want to manually edit requests or do some kin
 - post:deleteByQuery
 - pre:patchById
 - post:patchById
+- pre:replaceById
+- post:replaceById
 - pre:*
 - post:*
 - pre:finalize

@@ -16,6 +16,7 @@
     "test": "nyc --reporter=text ava test/*.spec.js --verbose",
     "test-ci": "npx nyc --reporter=lcov ava test/*.spec.js --verbose",
     "commit": "npx git-cz",
+    "documentation": "docsify init ./docs",
     "pre-commit": "npm run lint && npm run test",
     "changelog": "npx easy-changelog --out=./CHANGELOG.md",
     "release": "sh scripts/release.sh"
