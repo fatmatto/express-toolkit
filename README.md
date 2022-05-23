@@ -19,6 +19,7 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Default endpoints](#default-endpoints)
   - [Disable endpoints](#disable-endpoints)
   - [Sorting](#sorting)
+  - [Pagination](#pagination) 
   - [Projection](#projection)
   - [Custom primary key](#custom-primary-key)
   - [Hooks](#hooks)
@@ -237,6 +238,12 @@ For example, the following request would sort dinosaurs by age, oldest to younge
 ```http
 GET /dinosaurs?sortby=age&sortorder=DESC
 ```
+## Pagination
+GET endpoints support result pagination through `skip` and `limit` parameters:
+- `skip <Number>` tells the endpoint how many results to skip
+- `limit <Number` tells the endpoint how many results to include in the response
+
+To implement a pagination scheme, you can leverage these two parameters in the following way: Suppose you want to return `R` results per page and you want to return page number `P`, you just need to set limit to `R` and skip to `(P-1)*R`
 
 ## Projection
 
