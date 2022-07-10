@@ -1,3 +1,9 @@
+# 📦 0.8.2 (10 Jul 2022)
+- [01fe9](https://github.com/fatmatto/express-toolkit/commit/01fe99b1247349b8f659c30f09b4b351776baac5)  📦 Release 0.8.2
+- [72088](https://github.com/fatmatto/express-toolkit/commit/72088765a0071911a5dc2bb5a00e9e2abdd6810c)  chore: security update
+- [5a085](https://github.com/fatmatto/express-toolkit/commit/5a08573f62cf5f3dc44112f41b5c4d90b2478ff4)  docs: update rendered docs
+- [d5e72](https://github.com/fatmatto/express-toolkit/commit/d5e7206be0491b1ddf9e091118592310819ae16b)  Update README.md
+- [0d7bc](https://github.com/fatmatto/express-toolkit/commit/0d7bcd703669d61ec94b960ffdde3e50b307dc00)  📒 Update CHANGELOG
 # 📦 0.8.1 (12 Apr 2022)
 - [58254](https://github.com/fatmatto/express-toolkit/commit/582545971d0c116fbc20635ef3f0f4d3dfda85c5)  📦 Release 0.8.1
 - [b424c](https://github.com/fatmatto/express-toolkit/commit/b424c774b24fa548c296d12c7731be7ccfa0d05d)  fix: add missing dev dependency
