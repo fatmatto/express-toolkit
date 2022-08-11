@@ -1,3 +1,7 @@
+# 📦 0.8.3 (11 Aug 2022)
+- [1f853](https://github.com/fatmatto/express-toolkit/commit/1f853df63a079093d727208424db82a91deab1b0)  📦 Release 0.8.3
+- [4cd07](https://github.com/fatmatto/express-toolkit/commit/4cd0736653bc28cc7de82e0a1a6ea9bc3103c2dd)  chore: update dependencies
+- [bf2f6](https://github.com/fatmatto/express-toolkit/commit/bf2f6fe2d9293c7ebb7768dc643d10149b14f49e)  📒 Update CHANGELOG
 # 📦 0.8.2 (10 Jul 2022)
 - [01fe9](https://github.com/fatmatto/express-toolkit/commit/01fe99b1247349b8f659c30f09b4b351776baac5)  📦 Release 0.8.2
 - [72088](https://github.com/fatmatto/express-toolkit/commit/72088765a0071911a5dc2bb5a00e9e2abdd6810c)  chore: security update
