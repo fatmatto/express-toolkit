@@ -1,3 +1,7 @@
+# 📦 1.0.1 (23 Sep 2022)
+- [4d9b7](https://github.com/fatmatto/express-toolkit/commit/4d9b7e9506ee40373a53dffe8d56a9384f1ed0d3)  📦 Release 1.0.1
+- [11db4](https://github.com/fatmatto/express-toolkit/commit/11db41492c046dd1bde4eeab33c768eec9f21314)  fix: also find() should use lean() internally
+- [aa591](https://github.com/fatmatto/express-toolkit/commit/aa5916d8d18a5c2a60b9b67b83dd0c821447e920)  📒 Update CHANGELOG
 # 📦 1.0.0 (23 Sep 2022)
 - [4be82](https://github.com/fatmatto/express-toolkit/commit/4be825d85d4fa83ca441b2b9bdd2490c2a45493b)  📦 Release 1.0.0
 - [7d971](https://github.com/fatmatto/express-toolkit/commit/7d97123794ce7b62681e52cc2200ed168486009a)  fix: controller method should never return model instances
