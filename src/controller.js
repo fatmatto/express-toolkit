@@ -71,7 +71,7 @@ class Controller {
   async findOne (query) {
     const projection = getProjection(query)
     delete query.fields
-    const instance = await this.Model.findOne(query, projection)
+    const instance = await this.Model.findOne(query, projection).lean()
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
@@ -88,7 +88,7 @@ class Controller {
     query[this.id] = id
     const projection = getProjection(query)
     delete query.fields
-    const instance = await this.Model.findOne(query, projection)
+    const instance = await this.Model.findOne(query, projection).lean()
 
     if (instance === null) {
       throw new Errors.NotFound()
@@ -223,7 +223,8 @@ class Controller {
 
       return instance.toJSON()
     } else {
-      return instance.save()
+      const doc = await instance.save()
+      return doc.toJSON()
     }
   }
 
@@ -250,7 +251,8 @@ class Controller {
       throw new Errors.BadRequest(validationError.message)
     }
 
-    return instance.save()
+    const doc = await instance.save()
+    return doc.toJSON()
   }
 
   /**
@@ -308,7 +310,7 @@ class Controller {
 
     await this.Model.updateOne(query, updatedInstance.toObject())
 
-    return updatedInstance
+    return updatedInstance.toJSON()
   }
 
   /**

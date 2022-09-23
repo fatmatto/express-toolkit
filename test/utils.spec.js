@@ -1,4 +1,3 @@
-// TODO https://github.com/nodkz/mongodb-memory-server
 const test = require('ava')
 const utils = require('../src/utils')
 
