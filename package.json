@@ -1,6 +1,6 @@
 {
   "name": "express-toolkit",
-  "version": "0.8.3",
+  "version": "1.0.0",
   "files": [
     "index.js",
     "src/"
