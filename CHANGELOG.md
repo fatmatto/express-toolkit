@@ -1,3 +1,7 @@
+# 📦 1.0.0 (23 Sep 2022)
+- [4be82](https://github.com/fatmatto/express-toolkit/commit/4be825d85d4fa83ca441b2b9bdd2490c2a45493b)  📦 Release 1.0.0
+- [7d971](https://github.com/fatmatto/express-toolkit/commit/7d97123794ce7b62681e52cc2200ed168486009a)  fix: controller method should never return model instances
+- [b3efe](https://github.com/fatmatto/express-toolkit/commit/b3efe9dffa1a4b9e4c40574716513db62ebd6678)  📒 Update CHANGELOG
 # 📦 0.8.3 (11 Aug 2022)
 - [1f853](https://github.com/fatmatto/express-toolkit/commit/1f853df63a079093d727208424db82a91deab1b0)  📦 Release 0.8.3
 - [4cd07](https://github.com/fatmatto/express-toolkit/commit/4cd0736653bc28cc7de82e0a1a6ea9bc3103c2dd)  chore: update dependencies
