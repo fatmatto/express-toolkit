@@ -62,6 +62,7 @@ class Controller {
       .sort(sort)
       .skip(skip)
       .limit(limit)
+      .lean()
   }
 
   /**
