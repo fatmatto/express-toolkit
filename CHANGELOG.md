@@ -1,3 +1,7 @@
+# 📦 1.0.2 (24 Sep 2022)
+- [dd817](https://github.com/fatmatto/express-toolkit/commit/dd8176c0b595baf0d21d788419c7d904c5e272d5)  📦 Release 1.0.2
+- [db1d0](https://github.com/fatmatto/express-toolkit/commit/db1d0eb248b484a866732c765d4e454e8e24fc04)  fix: use toJSON instead of lean() to get javascript objects from models
+- [e5389](https://github.com/fatmatto/express-toolkit/commit/e53893e3084b8084fbf3a17937daa439f02d75fe)  📒 Update CHANGELOG
 # 📦 1.0.1 (23 Sep 2022)
 - [4d9b7](https://github.com/fatmatto/express-toolkit/commit/4d9b7e9506ee40373a53dffe8d56a9384f1ed0d3)  📦 Release 1.0.1
 - [11db4](https://github.com/fatmatto/express-toolkit/commit/11db41492c046dd1bde4eeab33c768eec9f21314)  fix: also find() should use lean() internally
