@@ -57,12 +57,13 @@ class Controller {
     delete query.sortorder
     delete query.fields
 
-    return this.Model
+    const docs = await this.Model
       .find(query, projection)
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .lean()
+
+    return docs.map(doc => doc.toJSON())
   }
 
   /**
@@ -72,11 +73,11 @@ class Controller {
   async findOne (query) {
     const projection = getProjection(query)
     delete query.fields
-    const instance = await this.Model.findOne(query, projection).lean()
+    const instance = await this.Model.findOne(query, projection)
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      return instance
+      return instance.toJSON()
     }
   }
 
@@ -89,12 +90,12 @@ class Controller {
     query[this.id] = id
     const projection = getProjection(query)
     delete query.fields
-    const instance = await this.Model.findOne(query, projection).lean()
+    const instance = await this.Model.findOne(query, projection)
 
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      return instance
+      return instance.toJSON()
     }
   }
 
