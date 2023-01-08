@@ -1,31 +1,29 @@
-# 📦 1.0.2 (24 Sep 2022)
+# 📦 1.0.3 (8 Jan 2023)
+- [14560](https://github.com/fatmatto/express-toolkit/commit/145603553a738bcb2fe88411cc8d36aef58de435)  📦 Release 1.0.3
+- [fe4b0](https://github.com/fatmatto/express-toolkit/commit/fe4b022179045cee6607d08e84cceb5b966ca1d3)  chore: update dependencies
+- [c4bea](https://github.com/fatmatto/express-toolkit/commit/c4bea7cca3738ca0e6538a66f0bd218bbb6b873d)  chore(deps): bump json5 from 1.0.1 to 1.0.2 (#42)
+- [48719](https://github.com/fatmatto/express-toolkit/commit/48719a175aa2f225f7ec9824ad28a1d8818fb973)  📒 Update CHANGELOG
 - [dd817](https://github.com/fatmatto/express-toolkit/commit/dd8176c0b595baf0d21d788419c7d904c5e272d5)  📦 Release 1.0.2
 - [db1d0](https://github.com/fatmatto/express-toolkit/commit/db1d0eb248b484a866732c765d4e454e8e24fc04)  fix: use toJSON instead of lean() to get javascript objects from models
 - [e5389](https://github.com/fatmatto/express-toolkit/commit/e53893e3084b8084fbf3a17937daa439f02d75fe)  📒 Update CHANGELOG
-# 📦 1.0.1 (23 Sep 2022)
 - [4d9b7](https://github.com/fatmatto/express-toolkit/commit/4d9b7e9506ee40373a53dffe8d56a9384f1ed0d3)  📦 Release 1.0.1
 - [11db4](https://github.com/fatmatto/express-toolkit/commit/11db41492c046dd1bde4eeab33c768eec9f21314)  fix: also find() should use lean() internally
 - [aa591](https://github.com/fatmatto/express-toolkit/commit/aa5916d8d18a5c2a60b9b67b83dd0c821447e920)  📒 Update CHANGELOG
-# 📦 1.0.0 (23 Sep 2022)
 - [4be82](https://github.com/fatmatto/express-toolkit/commit/4be825d85d4fa83ca441b2b9bdd2490c2a45493b)  📦 Release 1.0.0
 - [7d971](https://github.com/fatmatto/express-toolkit/commit/7d97123794ce7b62681e52cc2200ed168486009a)  fix: controller method should never return model instances
 - [b3efe](https://github.com/fatmatto/express-toolkit/commit/b3efe9dffa1a4b9e4c40574716513db62ebd6678)  📒 Update CHANGELOG
-# 📦 0.8.3 (11 Aug 2022)
 - [1f853](https://github.com/fatmatto/express-toolkit/commit/1f853df63a079093d727208424db82a91deab1b0)  📦 Release 0.8.3
 - [4cd07](https://github.com/fatmatto/express-toolkit/commit/4cd0736653bc28cc7de82e0a1a6ea9bc3103c2dd)  chore: update dependencies
 - [bf2f6](https://github.com/fatmatto/express-toolkit/commit/bf2f6fe2d9293c7ebb7768dc643d10149b14f49e)  📒 Update CHANGELOG
-# 📦 0.8.2 (10 Jul 2022)
 - [01fe9](https://github.com/fatmatto/express-toolkit/commit/01fe99b1247349b8f659c30f09b4b351776baac5)  📦 Release 0.8.2
 - [72088](https://github.com/fatmatto/express-toolkit/commit/72088765a0071911a5dc2bb5a00e9e2abdd6810c)  chore: security update
 - [5a085](https://github.com/fatmatto/express-toolkit/commit/5a08573f62cf5f3dc44112f41b5c4d90b2478ff4)  docs: update rendered docs
 - [d5e72](https://github.com/fatmatto/express-toolkit/commit/d5e7206be0491b1ddf9e091118592310819ae16b)  Update README.md
 - [0d7bc](https://github.com/fatmatto/express-toolkit/commit/0d7bcd703669d61ec94b960ffdde3e50b307dc00)  📒 Update CHANGELOG
-# 📦 0.8.1 (12 Apr 2022)
 - [58254](https://github.com/fatmatto/express-toolkit/commit/582545971d0c116fbc20635ef3f0f4d3dfda85c5)  📦 Release 0.8.1
 - [b424c](https://github.com/fatmatto/express-toolkit/commit/b424c774b24fa548c296d12c7731be7ccfa0d05d)  fix: add missing dev dependency
 - [2404e](https://github.com/fatmatto/express-toolkit/commit/2404e267a64966f72d1bdb6f35f85dbf647f5de2)  feat: add useUpdateOne flag to controller
 - [72260](https://github.com/fatmatto/express-toolkit/commit/72260f50214a4b12d1ac42713396dd3b1977590d)  📒 Update CHANGELOG
-# 📦 0.8.0 (30 Mar 2022)
 - [81d53](https://github.com/fatmatto/express-toolkit/commit/81d5359c23151c732b59e441fc08d8a265a086d4)  📦 Release 0.8.0
 - [6b443](https://github.com/fatmatto/express-toolkit/commit/6b4438428aed6cb405db92e8afb62090a4cab16a)  chore: update dependencies and fix lint
 - [da416](https://github.com/fatmatto/express-toolkit/commit/da416e9bab135a36b14d86f346ae803c543da315)  chore: update dependencies
