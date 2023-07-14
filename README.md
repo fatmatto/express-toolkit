@@ -19,8 +19,9 @@ Tiny little utilities for reducing expressjs boilerplate code when building simp
   - [Default endpoints](#default-endpoints)
   - [Disable endpoints](#disable-endpoints)
   - [Sorting](#sorting)
-  - [Pagination](#pagination) 
+  - [Pagination](#pagination)
   - [Projection](#projection)
+  - [Included resources](#included-resources)
   - [Custom primary key](#custom-primary-key)
   - [Hooks](#hooks)
       - [List of hooks](#list-of-hooks)
@@ -268,6 +269,54 @@ GET /dinosaurs?fields=-age,-name
 ```
 
 If you don't specify a `fields` parameter, every attribute will be returned.
+
+Projection can be also specified for subresources that will be included via the `include` keyword:
+
+```http
+GET /books?fields=title,author&fields[author]=name&include=author
+```
+
+## Included resources
+
+When querying for data, is often useful to fetch other documents, related to the main resource queried. For example when fetching for Books it is often useful to fetch the author's data:
+
+```http
+GET /books?include=author
+```
+
+This would return a payload similar to the following
+
+```json
+{
+  "status":true,
+  "data": [
+    {
+      "title":"The Lord of the Rings", 
+      "authorId":"A1", 
+      "includes":{
+        "author":{"name":"JRR Tolkien","uuid":"A1"}
+      }
+    },
+  ]
+}
+```
+
+To enable this kind of includes, the controller must be aware of the relationship:
+
+```javascript
+  const BookController = new Controller({
+    name: 'books',
+    id: 'uuid',
+    model: BookModel,
+    relationships: [
+      {
+        resource: 'authors',
+        localField: 'authorId',
+        foreignField: 'uuid'
+      }
+    ]
+  })
+```
 
 ## Custom primary key
 

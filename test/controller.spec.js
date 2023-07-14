@@ -23,6 +23,21 @@ test.before('setup', async () => {
   }
 })
 
+test('Should reject a wrong sortorder parameter', async t => {
+  const c = new Controller({
+    name: 'donkeys',
+    defaultLimitValue: 20,
+    defaultSkipValue: 0,
+    model: makeModel('donkeys')
+  })
+  const err = await t.throwsAsync(async () => {
+    const query = { sortorder: 'FOOBAR' }
+    const parsedQuery = c.parseOptions(query)
+    await c.find(parsedQuery.query, parsedQuery.options)
+  })
+  t.true(err instanceof Errors.BadRequest)
+})
+
 test('Should use the custom id key', async t => {
   const c = new Controller({
     name: 'cats',
@@ -31,8 +46,10 @@ test('Should use the custom id key', async t => {
     defaultSkipValue: 0,
     model: CatModel
   })
-  const cat = await c.findById('Snowball I')
-  t.is(cat.name, 'Snowball I')
+  const name = 'newly-created-cat'
+  await c.create({ name })
+  const foundcat = await c.findById(name)
+  t.is(foundcat.name, name)
 })
 
 test('Reject invalid resource', async t => {
@@ -257,19 +274,6 @@ test('Bulk update should reject updates without id', async t => {
   await t.throwsAsync(async () => {
     await c.bulkUpdate([{ Hello: 'World' }])
   })
-})
-
-test('Should reject a wrong sortorder parameter', async t => {
-  const c = new Controller({
-    name: 'donkeys',
-    defaultLimitValue: 20,
-    defaultSkipValue: 0,
-    model: makeModel('donkeys')
-  })
-  const err = await t.throwsAsync(async () => {
-    await c.find({ sortorder: 'FOOBAR' })
-  })
-  t.true(err instanceof Errors.BadRequest)
 })
 
 test('Should return the resource count', async t => {

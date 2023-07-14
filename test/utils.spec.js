@@ -1,5 +1,6 @@
 const test = require('ava')
 const utils = require('../src/utils')
+const querystring = require('node:querystring')
 
 test('Should accept valid json', async t => {
   const j = '{"a":true}'
@@ -12,16 +13,42 @@ test('Should reject invalid json', async t => {
 })
 
 test('Should correctly produce a projection object', t => {
-  const query = {
-    fields: 'age,-name'
-  }
+  const query = querystring.parse('fields=age,-name')
   const projection = utils.getProjection(query)
-  t.deepEqual(projection, { age: 1, name: 0 })
+  t.deepEqual(projection, { default: { age: 1, name: 0 } })
+})
+
+test('Should correctly produce a projection object for multiple resources and the base one', t => {
+  const query = { fields: ['age,-name', { subresource: 'uuid' }] }
+  const projection = utils.getProjection(query)
+  t.deepEqual(projection, { default: { age: 1, name: 0 }, subresource: { uuid: 1 } })
+
+  const err = t.throws(() => {
+    utils.getProjection({ fields: ['age,-name', { subresource: 100 }] })
+  })
+  t.is(err.name, 'BadRequest')
+})
+
+test('Should correctly produce a projection object for multiple resources without the base one', t => {
+  const query = { fields: { subresource: 'uuid' } }
+  const projection = utils.getProjection(query)
+  t.deepEqual(projection, { subresource: { uuid: 1 } })
+
+  const err = t.throws(() => {
+    utils.getProjection({ fields: { subresource: 100 } })
+  })
+  t.is(err.name, 'BadRequest')
+})
+
+test('Should correctly produce a default proejction', t => {
+  const query = { }
+  const projection = utils.getProjection(query)
+  t.deepEqual(projection, { default: {} })
 })
 
 test('Should throw error when fields parameter is not a string', t => {
   const query = {
-    fields: { hello: 1 }
+    fields: 2
   }
   const err = t.throws(() => {
     utils.getProjection(query)

@@ -1,6 +1,7 @@
 const express = require('express')
-const { asyncMiddleware } = require('./utils')
+const { asyncMiddleware, getProjection } = require('./utils')
 const Controller = require('./controller')
+
 /**
  *
  * @param {Controller} resource
@@ -24,7 +25,8 @@ function runHooks (resource, eventName) {
  * @param {function} next
  */
 function finalize (req, res, next) {
-  return res.send({ status: true, data: req.toSend })
+  const output = { status: true, data: req.toSend }
+  return res.send(output)
 }
 
 /**
@@ -110,7 +112,7 @@ function buildRouter (config) {
 
   const findMiddleware = asyncMiddleware(async (req, res, next) => {
     const query = req.query
-    const resources = await config.controller.find(query)
+    const resources = await config.controller.find(query, req.__parsedOptions)
     req.toSend = resources
     return next()
   })
@@ -126,6 +128,58 @@ function buildRouter (config) {
     req.toSend = resource
     return next()
   })
+
+  /**
+   *
+   * This middleware handles all the non filter operators
+   */
+  // function preOperatorsHandler (req, res, next) {
+  //   const parsedOptions = {
+  //     limit: config.controller.defaultLimitValue,
+  //     skip: config.controller.defaultSkipValue,
+  //     projection: { default: {} }
+  //   }
+  //   if (req.query.includes) {
+  //     parsedOptions.includes = req.query.includes.split(',')
+  //     delete req.query.includes
+  //   }
+  //   if (req.query.fields) {
+  //     parsedOptions.projection = getProjection(req.query)
+  //     delete req.query.fields
+  //   }
+
+  //   if (req.query.sortby) {
+  //     parsedOptions.sortby = req.query.sortby
+  //     delete req.query.sortby
+  //   }
+
+  //   if (req.query.sortorder) {
+  //     parsedOptions.sortorder = req.query.sortorder
+  //     delete req.query.sortorder
+  //   }
+
+  //   if (req.query.skip) {
+  //     parsedOptions.skip = Number(req.query.skip)
+  //     delete req.query.skip
+  //   }
+
+  //   if (req.query.limit) {
+  //     parsedOptions.limit = Number(req.query.limit)
+  //     delete req.query.limit
+  //   }
+
+  //   req.__parsedOptions = parsedOptions
+
+  //   return next()
+  // }
+
+  // async function postIncludeHandler (req, res, next) {
+  //   if (req.__parsedOptions.includes) {
+  //     req.__included = await config.controller.fetchSubresources(req.toSend, req.__parsedOptions.includes, config.relationships)
+  //   }
+
+  //   return next()
+  // }
 
   const endpoints = {
     count: {
@@ -181,7 +235,7 @@ function buildRouter (config) {
 
   }
 
-  for (let endpointName in endpoints) {
+  for (const endpointName in endpoints) {
     /**
      * This is for reto-compatibility reasons, some hooks (due to a bug or a bad design decision)
      * did not match the middleware name, for example the pre:update hook is run before the updateByQuery
@@ -200,7 +254,9 @@ function buildRouter (config) {
         endpoint.path,
         runHooks(config.controller, 'pre:*'),
         runHooks(config.controller, `pre:${hookName}`),
+        // preOperatorsHandler,
         endpoint.middleware,
+        // asyncMiddleware(postIncludeHandler),
         runHooks(config.controller, `post:${hookName}`),
         runHooks(config.controller, 'post:*'),
         runHooks(config.controller, 'pre:finalize'),

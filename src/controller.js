@@ -4,9 +4,11 @@
  */
 const DEFAULT_LIMIT_VALUE = 100
 const DEFAULT_SKIP_VALUE = 0
-const { getSorting, getProjection } = require('./utils')
 const Errors = require('throwable-http-errors')
 const JSONPatch = require('json8-patch')
+const mongoose = require('mongoose')
+const { getProjection, parseMultiResourceQueryParam, getOptionForSubresource, mergeOptions, getSorting } = require('./utils')
+
 /**
  * Implements a REST resource controller
  * @class Controller
@@ -17,6 +19,7 @@ class Controller {
    * @param {Object} config The configuration object
    * @param {String} config.name The resource name
    * @param {Object} config.model A mongoose model
+   * @param {Object} config.relationships A mongoose model
    * @param {String} [config.id] The attribute to use as primary key for findById, updateById and deleteById. Defaults to _id.
    * @param {Number} [config.defaultSkipValue] The default skip value to be used in find() queries
    * @param {Number} [config.defaultLimitValue] The default skip value to be used in find() queries
@@ -29,55 +32,166 @@ class Controller {
     this.useUpdateOne = Boolean(config.useUpdateOne) || false
     this.defaultSkipValue = config.defaultSkipValue || DEFAULT_SKIP_VALUE
     this.defaultLimitValue = config.defaultLimitValue || DEFAULT_LIMIT_VALUE
+    this.relationships = config.relationships || []
     this.__hooks = {}
+  }
+
+  /**
+   *
+   * @param {Array<Object>} resources The fetched resources
+   * @param {Object} options
+   * @returns
+   */
+  async fetchSubresourcesForList (resources, options = { }) {
+    for (const subresource of options.includes) {
+      const relationship = this.relationships.find(r => r.resource === subresource)
+      const { localField, foreignField } = relationship
+      const subresourceIds = resources.map(resource => resource[localField])
+      const model = mongoose.models[subresource]
+
+      const projection = getOptionForSubresource(options, subresource, 'projection') || {}
+      // If there's projection, we have to add the foreignField
+      if (Object.keys(projection).length > 0) { projection[foreignField] = 1 }
+      const sort = getOptionForSubresource(options, subresource, 'sort') || {}
+      const skip = getOptionForSubresource(options, subresource, 'skip') || this.defaultSkipValue
+      const limit = getOptionForSubresource(options, subresource, 'limit') || this.defaultLimitValue
+      const query = { [foreignField]: { $in: subresourceIds } }
+      const items = await model.find(query, projection)
+        .skip(skip)
+        .limit(limit)
+        .sort(sort)
+        .lean()
+      resources.forEach(resource => {
+        resource.included = resource.included || {}
+        resource.included[subresource] = items.filter(item => item[foreignField] === resource[localField])
+      })
+    }
+
+    return resources
+  }
+
+  /**
+   *
+   * @param {Array<Object>} resource The fetched resource
+   * @param {Object} options
+   * @returns
+   */
+  async fetchSubresourcesForSingleResource (resource, options = {}) {
+    for (const subresource of options.includes) {
+      const relationship = this.relationships.find(r => r.resource === subresource)
+      const { localField, foreignField } = relationship
+      const subresourceId = resource[localField]
+      const model = mongoose.models[subresource]
+      const projection = getOptionForSubresource(options, subresource, 'projection') || {}
+      if (Object.keys(projection).length > 0) { projection[foreignField] = 1 }
+      const sort = getOptionForSubresource(options, subresource, 'sort') || {}
+      const skip = getOptionForSubresource(options, subresource, 'skip') || this.defaultSkipValue
+      const limit = getOptionForSubresource(options, subresource, 'limit') || this.defaultLimitValue
+      // Run the query
+      const items = await model.find({ [foreignField]: subresourceId }, projection)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .lean()
+      // const items = await model.find({ [foreignField]: subresourceId }, fields)
+      resource.included = resource.included || {}
+      resource.included[subresource] = items
+    }
+
+    return resource
+  }
+
+  parseOptions (query) {
+    const parsedOptions = {
+      limit: { default: this.defaultLimitValue },
+      skip: { default: this.defaultSkipValue },
+      projection: { default: {} },
+      sort: { default: { _id: -1 } }
+    }
+    if (query.includes) {
+      parsedOptions.includes = query.includes.split(',')
+      const unknownIncludes = parsedOptions.includes.filter(wantedSubResource => !this.relationships.find(r => r.resource === wantedSubResource))
+      if (unknownIncludes.length > 0) {
+        throw new Errors.BadRequest(`Unkown included resource: ${unknownIncludes.join(',')}`)
+      }
+      delete query.includes
+    }
+    if (query.fields) {
+      parsedOptions.projection = getProjection(query)
+      delete query.fields
+    }
+    let sortby; let sortorder = null
+    if (query.sortby) {
+      sortby = parseMultiResourceQueryParam(query.sortby)
+      delete query.sortby
+    }
+
+    if (query.sortorder) {
+      sortorder = parseMultiResourceQueryParam(query.sortorder)
+      delete query.sortorder
+    }
+
+    parsedOptions.sort = mergeOptions({ sortby, sortorder })
+    for (const k in parsedOptions.sort) {
+      parsedOptions.sort[k] = getSorting(parsedOptions.sort[k])
+    }
+
+    if (query.skip) {
+      parsedOptions.skip = parseMultiResourceQueryParam(query.skip, Number)
+      delete query.skip
+    }
+
+    if (query.limit) {
+      parsedOptions.limit = parseMultiResourceQueryParam(query.limit, Number)
+      delete query.limit
+    }
+
+    return { query, options: parsedOptions }
   }
 
   /**
    * Looks for records
    * @param {Object} query The query object
+   * @param {Object} options The query options
+   * @param {Object} options.limit How many records should be returned
+   * @param {Object} options.skip How many records should be skipped
+   * @param {Object} options.fields A comma separated list of fields to include in the resource
+   * @param {Object} options.sortby The field to use for sorting
+   * @param {Object} options.sortorder The sort order, ASC or DESC
+   * @param {Object} options.include Which subresources to include
    */
-  async find (query) {
-    let skip = this.defaultSkipValue
-    let limit = this.defaultLimitValue
-    if (Object.prototype.hasOwnProperty.call(query, 'limit')) {
-      limit = Number(query.limit)
+  async find (_query) {
+    const { query, options } = this.parseOptions(_query)
+    let docs = await this.Model
+      .find(query, options?.projection?.default || {})
+      .sort(options.sort.default || { _id: -1 })
+      .skip(options.skip.default || this.defaultSkipValue)
+      .limit(options.limit.default || this.defaultLimitValue)
+      // We cannot call lean here, otherwise virtuals are not honored
+      // we should investigate the dedicated mongoose plugin (it's official)
+    docs = docs.map(doc => doc.toJSON())
+    if (options.includes) {
+      docs = await this.fetchSubresourcesForList(docs, options)
     }
-    if (Object.prototype.hasOwnProperty.call(query, 'skip')) {
-      skip = Number(query.skip)
-    }
 
-    const projection = getProjection(query)
-
-    const sort = getSorting(query)
-
-    // Deleting modifiers from the query
-    delete query.skip
-    delete query.limit
-    delete query.sortby
-    delete query.sortorder
-    delete query.fields
-
-    const docs = await this.Model
-      .find(query, projection)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-
-    return docs.map(doc => doc.toJSON())
+    return docs
   }
 
   /**
    * Looks for a single record matching the query
    * @param {Object} query The object used to query the database
    */
-  async findOne (query) {
-    const projection = getProjection(query)
-    delete query.fields
-    const instance = await this.Model.findOne(query, projection)
+  async findOne (_query) {
+    const { query, options } = this.parseOptions(_query)
+    let instance = await this.Model.findOne(query, options?.projection?.default || {})
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      return instance.toJSON()
+      instance = instance.toJSON()
+      if (options.includes) {
+        instance = await this.fetchSubresourcesForSingleResource(instance, options)
+      }
+      return instance
     }
   }
 
@@ -86,16 +200,17 @@ class Controller {
 * @param {String | Number} id The object used to query the database
 * @param {Object} query An object of additioanl query values, to further limit the query. Useful when, for example, you want to restrict the query to a group of resources.
 */
-  async findById (id, query = {}) {
-    query[this.id] = id
-    const projection = getProjection(query)
-    delete query.fields
-    const instance = await this.Model.findOne(query, projection)
-
+  async findById (id, _query = {}) {
+    const { options } = this.parseOptions(_query)
+    let instance = await this.Model.findOne({ [this.id]: id }, options?.projection?.default || {})
     if (instance === null) {
       throw new Errors.NotFound()
     } else {
-      return instance.toJSON()
+      instance = instance.toJSON()
+      if (options.includes) {
+        instance = await this.fetchSubresourcesForSingleResource(instance, options)
+      }
+      return instance
     }
   }
 
