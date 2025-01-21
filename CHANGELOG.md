@@ -1,3 +1,7 @@
+# 📦 1.0.7 (21 Jan 2025)
+- [7e28b](https://github.com/fatmatto/express-toolkit/commit/7e28ba21abc4f93ce0e9978f413526bcccc82365)  📦 Release 1.0.7
+- [9fad2](https://github.com/fatmatto/express-toolkit/commit/9fad2477493ce172146fd2ef5c2e17ee9a3db5ed)  fix: package.json should include types
+- [360bb](https://github.com/fatmatto/express-toolkit/commit/360bb258c2106f0006f8ed46ed902ad1ba7fdab3)  📒 Update CHANGELOG
 # 📦 1.0.6 (21 Jan 2025)
 - [1d24f](https://github.com/fatmatto/express-toolkit/commit/1d24f5b862c8f58a2ed695662c0a6544864bcc8f)  📦 Release 1.0.6
 - [c780b](https://github.com/fatmatto/express-toolkit/commit/c780b8a1ec3a8f1d3eee8ee6ceb3174c1d685c52)  fix: package.json should include types
