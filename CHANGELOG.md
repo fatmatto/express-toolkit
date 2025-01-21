@@ -1,3 +1,7 @@
+# 📦 1.0.5 (21 Jan 2025)
+- [f3811](https://github.com/fatmatto/express-toolkit/commit/f3811ba36f98683b8f0999b1d0d5b649ac85fb56)  📦 Release 1.0.5
+- [3a43f](https://github.com/fatmatto/express-toolkit/commit/3a43f6c8208cf618e0d27fa3ede88087720e258f)  fix: package.json should include types
+- [0d48a](https://github.com/fatmatto/express-toolkit/commit/0d48ade7c3d8c565a402fe900c6b6b14bbb136b7)  📒 Update CHANGELOG
 # 📦 1.0.4 (21 Jan 2025)
 - [b265b](https://github.com/fatmatto/express-toolkit/commit/b265bd5e3e019362481afaf655c9af6ab7cd8541)  📦 Release 1.0.4
 - [a2431](https://github.com/fatmatto/express-toolkit/commit/a243172d777240b277a6ec6997140331bf8d9e68)  feat: add typescript types
