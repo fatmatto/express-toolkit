@@ -3,7 +3,8 @@
   "version": "1.0.4",
   "files": [
     "index.js",
-    "src/"
+    "src/",
+    "types/"
   ],
   "description": "Handy tools for building expressjs based http microservices",
   "main": "index.js",
