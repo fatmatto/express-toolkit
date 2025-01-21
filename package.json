@@ -4,7 +4,8 @@
   "files": [
     "index.js",
     "src/",
-    "types/"
+    "types/",
+    "index.d.ts"
   ],
   "description": "Handy tools for building expressjs based http microservices",
   "main": "index.js",
