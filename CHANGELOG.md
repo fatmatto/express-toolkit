@@ -1,3 +1,12 @@
+# 📦 1.0.4 (21 Jan 2025)
+- [b265b](https://github.com/fatmatto/express-toolkit/commit/b265bd5e3e019362481afaf655c9af6ab7cd8541)  📦 Release 1.0.4
+- [a2431](https://github.com/fatmatto/express-toolkit/commit/a243172d777240b277a6ec6997140331bf8d9e68)  feat: add typescript types
+- [c8d4e](https://github.com/fatmatto/express-toolkit/commit/c8d4eca561156df5a6bc66cf67499708ce2afd04)  chore(deps-dev): bump braces from 3.0.2 to 3.0.3 (#54)
+- [85a2e](https://github.com/fatmatto/express-toolkit/commit/85a2ef4c4132e163efda69edf8e18f72f898ad81)  chore(deps): bump express from 4.18.1 to 4.19.2 (#53)
+- [84255](https://github.com/fatmatto/express-toolkit/commit/84255702b5d101938947c4d0e2e76745a17e3b01)  chore(deps-dev): bump @babel/traverse from 7.17.3 to 7.23.2 (#49)
+- [e4163](https://github.com/fatmatto/express-toolkit/commit/e4163c2746aa7272a47ba7d99683c12063189133)  chore(deps): bump mongodb and mongoose (#48)
+- [5a670](https://github.com/fatmatto/express-toolkit/commit/5a67046d98d62cc83e0ffc8cf0aac577bd474329)  chore(deps): bump cookiejar from 2.1.2 to 2.1.4 (#44)
+- [d85a5](https://github.com/fatmatto/express-toolkit/commit/d85a5c51a29d93c4d289fc8fb734d19e22170566)  📒 Update CHANGELOG
 # 📦 1.0.3 (8 Jan 2023)
 - [14560](https://github.com/fatmatto/express-toolkit/commit/145603553a738bcb2fe88411cc8d36aef58de435)  📦 Release 1.0.3
 - [fe4b0](https://github.com/fatmatto/express-toolkit/commit/fe4b022179045cee6607d08e84cceb5b966ca1d3)  chore: update dependencies
