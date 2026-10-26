@@ -8,6 +8,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongooseSetup = require('./helpers/mongoose.helper')
 const { makeApp } = require('./helpers/app.helper')
+const mongoose = require('mongoose')
 
 test.before('setup', async () => {
   await mongooseSetup()
@@ -386,4 +387,108 @@ test('Should be able to use a customized id route param', async t => {
 
   t.is(result.data.params.id, 'user123')
   t.is(result.data.params.settingId, 'setting123')
+})
+
+const makeProjectScopedApp = (modelName, setupController = () => {}) => {
+  const Model = mongoose.model(modelName, new mongoose.Schema({
+    name: { type: String, required: true },
+    projectId: { type: String, required: true }
+  }, { strict: true }), modelName)
+  const ctrl = new Controller({ name: modelName, model: Model })
+  setupController(ctrl)
+
+  const app = express()
+  app.use(bodyParser.json())
+  // Mimics services that scope every request to the project in the path
+  app.use('/projects/:projectId/files', (req, res, next) => {
+    req.query.projectId = req.params.projectId
+    next()
+  }, router({ controller: ctrl }))
+
+  return { app, Model }
+}
+
+test('deleteById should not delete a resource belonging to another project', async t => {
+  const { app, Model } = makeProjectScopedApp('scopeddeletewrong')
+  const file = await Model.create({ name: 'secret.pdf', projectId: 'p1' })
+
+  await request(app)
+    .delete(`/projects/p2/files/${file._id}`)
+
+  t.truthy(await Model.findById(file._id))
+})
+
+test('deleteById should delete a resource belonging to the given project', async t => {
+  const { app, Model } = makeProjectScopedApp('scopeddeleteright')
+  const file = await Model.create({ name: 'mine.pdf', projectId: 'p1' })
+
+  const response = await request(app)
+    .delete(`/projects/p1/files/${file._id}`)
+
+  t.is(response.status, 200)
+  t.is(await Model.findById(file._id), null)
+})
+
+test('deleteById should still run *:deleteById hooks when scoped by query', async t => {
+  const spies = {
+    pre: sinon.spy(),
+    post: sinon.spy()
+  }
+  const { app, Model } = makeProjectScopedApp('scopeddeletehooks', ctrl => {
+    ctrl.registerHook('pre:deleteById', (req, res, next) => {
+      spies.pre()
+      next()
+    })
+    ctrl.registerHook('post:deleteById', (req, res, next) => {
+      spies.post()
+      next()
+    })
+  })
+  const file = await Model.create({ name: 'hooked.pdf', projectId: 'p1' })
+
+  await request(app)
+    .delete(`/projects/p1/files/${file._id}`)
+
+  t.true(spies.pre.called)
+  t.true(spies.post.called)
+  t.is(await Model.findById(file._id), null)
+})
+
+test('patchById should be scoped by query', async t => {
+  const { app, Model } = makeProjectScopedApp('scopedpatch')
+  const file = await Model.create({ name: 'original.pdf', projectId: 'p1' })
+  const patch = [{ op: 'replace', path: '/name', value: 'patched.pdf' }]
+
+  const wrong = await request(app)
+    .patch(`/projects/p2/files/${file._id}`)
+    .send(patch)
+
+  t.is(wrong.status, 404)
+  t.is((await Model.findById(file._id)).name, 'original.pdf')
+
+  const right = await request(app)
+    .patch(`/projects/p1/files/${file._id}`)
+    .send(patch)
+
+  t.is(right.status, 200)
+  t.is((await Model.findById(file._id)).name, 'patched.pdf')
+})
+
+test('replaceById should be scoped by query', async t => {
+  const { app, Model } = makeProjectScopedApp('scopedreplace')
+  const file = await Model.create({ name: 'original.pdf', projectId: 'p1' })
+
+  const wrong = await request(app)
+    .put(`/projects/p2/files/${file._id}/replace`)
+    .send({ name: 'replaced.pdf', projectId: 'p1' })
+
+  t.is(wrong.status, 404)
+  t.is((await Model.findById(file._id)).name, 'original.pdf')
+
+  const right = await request(app)
+    .put(`/projects/p1/files/${file._id}/replace`)
+    .send({ name: 'replaced.pdf', projectId: 'p1' })
+
+  t.is(right.status, 200)
+  t.is((await Model.findById(file._id)).name, 'replaced.pdf')
 })

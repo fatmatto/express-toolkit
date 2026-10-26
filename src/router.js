@@ -90,7 +90,7 @@ function buildRouter (config) {
   })
 
   const deleteByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    await config.controller.deleteById(req.params[config.id])
+    await config.controller.deleteById(req.params[config.id], req.query)
     req.toSend = null
     return next()
   })
@@ -116,13 +116,13 @@ function buildRouter (config) {
   })
 
   const patchByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.patchById(req.params[config.id], req.body)
+    const resource = await config.controller.patchById(req.params[config.id], req.body, req.query)
     req.toSend = resource
     return next()
   })
 
   const replaceByIdMiddleware = asyncMiddleware(async (req, res, next) => {
-    const resource = await config.controller.replaceById(req.params[config.id], req.body)
+    const resource = await config.controller.replaceById(req.params[config.id], req.body, req.query)
     req.toSend = resource
     return next()
   })
@@ -181,7 +181,7 @@ function buildRouter (config) {
 
   }
 
-  for (let endpointName in endpoints) {
+  for (const endpointName in endpoints) {
     /**
      * This is for reto-compatibility reasons, some hooks (due to a bug or a bad design decision)
      * did not match the middleware name, for example the pre:update hook is run before the updateByQuery
