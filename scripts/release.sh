@@ -6,47 +6,48 @@
 # * NPM package version
 # * Git tags
 
+# Stop at the first failing command
+set -eu
 
 # Calculating the new version requires to know which kind of update this is
 # The default version increment is patch
 # Used values: major|minor|patch where in x.y.z :
-# major=x  
-# minor=y 
+# major=x
+# minor=y
 # patch=z
+versionType="${1:-patch}"
 
-if [ -z "$1" ]
-then
-  versionType="patch"
-else
-  versionType=$1
-fi
+# Preflight: release only a clean master, in sync with origin, with tests and lint passing
+[ "$(git rev-parse --abbrev-ref HEAD)" = "master" ] || { echo "Release only from master"; exit 1; }
+[ -z "$(git status --porcelain)" ] || { echo "Working tree is not clean"; exit 1; }
+# Tags are needed locally to generate the CHANGELOG sections
+git fetch origin --tags
+[ "$(git rev-parse HEAD)" = "$(git rev-parse origin/master)" ] || { echo "master is not in sync with origin/master"; exit 1; }
+npm test
+npx eslint index.js 'test/*' src/
+npm whoami > /dev/null
 
 # Increment version without creating a tag and a commit (we will create them later)
-npm --no-git-tag-version version $versionType || exit 1
+npm --no-git-tag-version version "$versionType"
 
 # Using the package.json version
-version="$(grep '"version"' package.json | cut -d'"' -f4)"
-
-
+version="$(node -p "require('./package.json').version")"
 
 # Build the commit
-git add package.json;
-git add package-lock.json;
-
-
+git add package.json package-lock.json
 git commit -m "📦 Release $version"
 
 # Create an annotated tag
-git tag -a $version -m "📦 Release $version"
-
-# Gotta push them all
-git push origin master --follow-tags;
+git tag -a "$version" -m "📦 Release $version"
 
 # Generate changelog from commits
-npx easy-changelog --out=./CHANGELOG.md;
-git add CHANGELOG.md;
+npx --yes easy-changelog@1.0.2 --out=./CHANGELOG.md
+git add CHANGELOG.md
 git commit -m "📒 Update CHANGELOG"
-git push origin master
 
-# Release it!
+# Release it! Publish before pushing, so a failed publish leaves nothing on origin
+npm pack --dry-run
 npm publish
+
+# Gotta push them all
+git push origin master --follow-tags
